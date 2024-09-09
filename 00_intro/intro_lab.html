@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Cloud Architecture Introduction</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Cloud Architecture Introduction</h1>
+</header>
+<p><strong>Lecturer:</strong> Dr Peadar Grant</p>
+<p><a
+href="https://courses.dkit.ie/index.cfm/page/module/moduleId/56218/deliveryperiodid/1066">Module
+descriptor</a></p>
+<h1 id="learning-outcomes">Learning outcomes</h1>
+<ol type="1">
+<li><strong>MLO1:</strong> Describe principle cloud computing concepts,
+service models and benefits.</li>
+<li><strong>MLO2:</strong> Assemble virtual cloud infrastructure on
+commercial cloud service providers incorporating identity and access
+management and other security considerations.</li>
+<li><strong>MLO3:</strong> Migrate backend application workloads from
+development and on-premises deployments to public, hybrid and private
+cloud infrastructure.</li>
+<li><strong>MLO4:</strong> Design cloud-first architectures to leverage
+managed database, cache, load balancing and storage services.</li>
+<li><strong>MLO5:</strong> Automate provisioning, deployment, scaling
+and monitoring operations.</li>
+<li><strong>MLO6:</strong> Evaluate the suitability of commercial cloud
+platforms for existing on-premises and new workloads.</li>
+</ol>
+<h1 id="module-indicative-content">Module Indicative Content</h1>
+<h2 id="cloud-fundamentals">Cloud Fundamentals</h2>
+<p>Cloud computing definition; Outsourcing in the business and
+technology contexts; Public, private and hybrid cloud models.
+Understanding the cloud computing stack: IaaS, PaaS, SaaS, Storage as a
+Service. Comparison of cloud to on-premises deployments. Examine
+terms-of-service and SLAs offered by commercial cloud providers.</p>
+<h2 id="cloud-infrastructure">Cloud Infrastructure</h2>
+<p>Assembly of infrastructure on commercial cloud providers
+incorporating compute, networking and storage as a service. Provisioning
+of compute capacity for multiple server operating systems. Evaluation of
+object, block and network file systems for storage workloads. Migration
+of existing web and other backend workloads to IaaS platforms. Setup of
+IP and DNS for reachability.</p>
+<h2 id="application-design">Application design</h2>
+<p>Design of cloud-first applications designed for on-demand horizontal
+scaling. Selection of managed cloud platform services: databases
+(relational, non-relational, graph, full-text search), in-memory caches,
+messaging queues, notification services, directory services, edge
+caching, content delivery networks, managed DNS. Replication across
+multiple geographic regions for availability and performance
+optimisation.</p>
+<h2 id="cloud-migration">Cloud Migration</h2>
+<p>Evaluate current business applications and their suitability for
+migration and/or full/partial redesign for cloud deployment.
+Consideration of access management, security vulnerabilities, data
+availability, response time, backup, licensing. Design of partial and
+staged migrations that link on-premises and cloud workloads,
+incorporating VPN and dedicated links.</p>
+<h2 id="automation">Automation</h2>
+<p>Automation of provisioning and lifecycle management using provider
+tools and self-built automation scripting. Usage of
+infrastructure-as-code patterns to assemble cloud infrastructure and
+managed services. Automated scaling of component services to optimise
+identified performance and cost metrics.</p>
+<h1 id="assessment">Assessment</h1>
+<p>There are <strong>4</strong> assessments in this module:</p>
+<ol type="1">
+<li><strong>Class test 1</strong> (End semester 1, 20%)</li>
+<li><strong>CA1</strong> (Due end semester 1, 20%)</li>
+<li><strong>Class test 2</strong> (End semester 2,
+<strong>40%</strong>)</li>
+<li><strong>CA2</strong> (Due end semester 2, 20%)</li>
+</ol>
+<p><strong>Important to remember:</strong> This module is:</p>
+<ul>
+<li><strong>10 credits</strong> so important to pass!</li>
+<li><strong>Year long</strong></li>
+</ul>
+<h1 id="content">Content</h1>
+<p>All content will be placed in this git repository unless otherwise
+specified.</p>
+<p>Make sure to run <code>git pull --rebase</code> regularly to update
+your copy of the files.</p>
+<p>You <em>need</em> to use a local clone of the git repository. You can
+browse the repository online on your phone / tablet directly from GitHub
+but running the code and viewing the notes pages in HTML require a local
+clone.</p>
+<h1 id="assumed-prior-knowledge">Assumed prior knowledge</h1>
+<p>We will be <em>using</em> a lot of concepts that you’ve
+<em>already</em> studied in previous modules. This will hopefully be
+familiar to you due to usage and repetition, but may need some revision
+on your part. We will review and extend certain concepts again as
+necessary.</p>
+<h2 id="relevant-modules">Relevant modules</h2>
+<ul>
+<li><strong>Cloud foundations</strong></li>
+<li><strong>Cloud technologies</strong></li>
+</ul>
+<h2 id="specific-skills">Specific skills</h2>
+<p>You should have:</p>
+<ul>
+<li>Familiarity with command-line interfaces (built by regular routine
+usage of them!)</li>
+<li>Basic Bash usage on Linux:
+<ul>
+<li>Concept of working directory</li>
+<li>Navigating filesystem using <code>pwd</code>, <code>cd</code> and
+relative operators, e.g. <code>..</code>, <code>/</code> etc.</li>
+<li>Manipulating files using <code>rm</code>, <code>mv</code>,
+<code>cp</code> etc.</li>
+<li>Displaying files using <code>cat</code>, <code>more</code> etc.</li>
+<li>Manipulating directories using <code>mkdir</code>,
+<code>rmdir</code> etc.</li>
+<li>File permissions and ownership <code>chmod</code>,
+<code>chown</code> etc.</li>
+<li>Use of wildcards (e.g. <code>*</code>) to refer to multiple
+files.</li>
+<li>Up cursor to recall previous commands</li>
+</ul></li>
+<li>Basic PowerShell usage on Windows
+<ul>
+<li>Same ideas as above for Bash required.</li>
+</ul></li>
+<li>You can run an existing Python or PowerShell program in the
+command-line environment.</li>
+<li>Accessing help on commands via switches (e.g. <code>-h</code> or
+similar) and using <code>man</code> command.</li>
+<li>Principle of Shell redirection (<code>&gt;</code>,
+<code>&lt;</code>) and command piping / chaining (<code>|</code>)
+<ul>
+<li>Using <code>Get-Content</code> and <code>Out-File</code> in
+PowerShell to achieve same aims.</li>
+</ul></li>
+<li>JSON format
+<ul>
+<li>Basic understanding of JSON structure manually</li>
+<li>Encountered JSON in files, from command output and APIs.</li>
+<li>Using <code>ConvertFrom-Json</code> and <code>ConvertTo-Json</code>
+in PowerShell</li>
+</ul></li>
+<li>Secure SHell (<code>ssh</code>)
+<ul>
+<li>Idea of accessing remote command-line shells on another host</li>
+<li>Key-based authentication using public/private keypair</li>
+<li>More advanced concepts: single-command, agent forwarding etc.</li>
+</ul></li>
+<li>SFTP (<code>sftp</code>)
+<ul>
+<li>standard operations (<code>get</code>, <code>put</code>)</li>
+<li>concept of local/remote directory navigation (<code>cd</code>,
+<code>lcd</code>, etc)</li>
+</ul></li>
+<li>Plain text editors via local GUI (e.g. notepad, emacs, VSCode) and
+local/remote console (<code>emacs</code>, <code>nano</code>,
+<code>vim</code> etc).</li>
+<li>Working knowledge of <code>git</code>
+(e.g. <code>git pull --rebase</code>)</li>
+<li>AWS
+<ul>
+<li>AWS Console and CLI</li>
+<li>Main IaaS and PaaS components</li>
+<li>VPC incl. subnets, gateways, routing, security groups</li>
+<li>EC2 incl. operating systems, user data scripts, SSH connection,
+Windows password discovery</li>
+<li>PaaS services including S3, SQS, SNS, Lambda</li>
+<li>Basic AWS IAM role and policy setup</li>
+</ul></li>
+<li>Basic CloudFormation knowledge
+<ul>
+<li>Templates, stacks</li>
+<li>Creating / updating / deleting stacks in GUI and CLI</li>
+<li>Parameters and Outputs in templates for customisation and
+inspection</li>
+<li>Combining CloudFormation with PowerShell</li>
+</ul></li>
+</ul>
+<h2 id="command-line-interfaces">Command-line interfaces</h2>
+<p>If you <em>“don’t do” command line interfaces</em> you will need to
+reset that starting limitation you’ve placed on yourself for success in
+this module. Almost <strong>all</strong> of our work
+<strong>will</strong> involve command-line interfaces with no GUI
+alternative. There’s simply no way of avoiding CLIs here!</p>
+<h1 id="client-system-requirements">Client system requirements</h1>
+<p>The only supported client configuration is the DkIT specialist lab
+computers. All required client software is installed on DkIT specialist
+lab computers (P1153). In additional all required services are
+accessible from DkIT specialist lab computers.</p>
+<p>You are welcome to try using your own device(s) at home and within
+DkIT, as well as non-specialist-lab computers to help you in this
+module. While I encourage you to try things out, you are responsible for
+supporting your own devices and configurations.</p>
+<p>The <code>client_check.ps1</code> and <code>client_check.sh</code>
+scripts (which call the <code>system_check.py</code> script) can be used
+to see if all required software for this module is installed on the
+client device you’ll use for the module.</p>
+<h1 id="remote-access">Remote access</h1>
+<p><strong>TODO:</strong> confirm remote access arrangments based on new
+network setup 2024</p>
+<h1 id="academic-integrity">Academic integrity</h1>
+<p>You are reminded that all of your work must comply with DkIT Academic
+Integrity Policy.</p>
+<p>Specific guidance will be given on the assessments in this
+module.</p>
+</body>
+</html>
