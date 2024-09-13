@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Cloud Architecture Client Setup Lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Cloud Architecture Client Setup Lab</h1>
+</header>
+<p>The aim of this lab is to set up your client environment in the lab.
+I recommend that you use the same computer each session as some
+configuration files and key pairs need to be placed in the appropriate
+folders. However I have also provided scripts to copy these to/from
+OneDrive assuming that you’ve set it up.</p>
+<h1 id="task-1-git-repository">Task 1: Git repository</h1>
+<p>Ensure that you have a copy of the Git repository for the module in a
+location <em>not managed by OneDrive</em>. Make sure that it is up to
+date by running:</p>
+<pre><code>git pull --rebase</code></pre>
+<h1 id="task-2-enable-script-execution">Task 2: Enable script
+execution</h1>
+<p>Open Windows Terminal. Make sure that it’s a PowerShell (not cmd)
+terminal by ensuring the <code>PS</code> prompt is visible on the left.
+Navigate to this <code>01_client_setup</code> folder. (Hint: you can
+copy the path in Windows 11 by right-clicking the
+<code>01_client_setup</code> folder and <code>cd</code> into it.</p>
+<p>We will use PowerShell (and other) scripts a lot in this module.
+PowerShell scripts are restricted by default in Windows. To check if
+your user account on this PC permits PowerShell script execution try
+running the test script provided by typing:</p>
+<pre><code>./test_script.ps1</code></pre>
+<p>You should see a message printed in Green. If not then run:</p>
+<pre><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></pre>
+<p>Close and re-open PowerShell. Navigate back to this
+<code>01_client_setup</code> folder. Make sure that the test script
+<code>./test_script.ps1</code> now runs. Don’t move on to the next task
+until this works.</p>
+<h1 id="task-2-client-software-check">Task 2: Client software check</h1>
+<p>We will now run a script to check that your client PC has all the
+needed software. The specialist lab PCs should pass these checks - if
+they don’t you need to let me know and we will raise a ticket.
+Nevertheless, we’ll confirm anyway as sometimes software can be missing
+or not accessible.</p>
+<p>Run the script:</p>
+<pre><code>./client_check.ps1</code></pre>
+<p>Make sure that it prints a message in green that the PC has all
+required packages installed for completing this module. If it does not,
+stop and let me know.</p>
+<h2 id="working-from-home-or-own-device">Working from home or own
+device</h2>
+<p>If you want to work at home you can use this (or
+<code>client_check.sh</code> on Mac / Linux) to verify that your system
+has all required packages. The script will give the links to download
+required software.</p>
+<p>In terms of expectations, I only can support use of lab PCs and
+cannot troubleshoot your home or mobile configurations. In theory most
+of the configuration here should work on home / mobile devices but I
+can’t guarantee it.</p>
+<h1 id="task-3-xoa-setup">Task 3: XOA setup</h1>
+<p>We may use XOA at some stages in the module to demonstrate some
+concepts at a lower cost than the commercial cloud platforms and explore
+private cloud environments.</p>
+<h2 id="check-that-xoa-works">Check that XOA works</h2>
+<p>Make sure that you can log into XOA. If you see the
+<code>New VM</code> button then move on ahead to the next task. If not,
+request permissions as in next section.</p>
+<h2 id="xoa-permission-request">XOA permission request</h2>
+<p>To request permissions to XOA visit https://xoarequest.comp.dkit.ie/
+. The technical staff will review requests and grant permissions.</p>
+<h1 id="task-4-ssh-keys">Task 4: SSH keys</h1>
+<p>You previously have encountered SSH keys for connecting to remote
+machines, and in the case of AWS for decrypting Windows VM passwords.
+Keys can be encrypted and therefore protected by a passphrase. We will
+for now not use this, but you can do so if you like. Just don’t forget
+your Passphrase!</p>
+<p>In some exercises we’ll use alternative key pairs that we’ll generate
+on-demand as needed.</p>
+<h2 id="generate-ed25519-key-pair">Generate ED25519 key pair</h2>
+<p>ED25519 key pairs are best for logging into Linux instances. Your
+ED25519 key pair can be created by running the command:</p>
+<pre><code>ssh-keygen -t ed25519</code></pre>
+<p>Just hit enter to accept all the defaults. You may have to enter
+<em>Yes</em> to overwrite the existing key(s) if they exist. Your SSH
+key pair will be stored in <em>two</em> files in the <code>.ssh</code>
+subdirectory of your home folder:</p>
+<ul>
+<li><code>id_ed25519</code> stores the private key</li>
+<li><code>id_ed25519.pub</code> stores the public key</li>
+</ul>
+<h2 id="generate-2048-bit-rsa-key-pair">Generate 2048-bit RSA key
+pair</h2>
+<p>AWS uses SSH key pairs to securely provide the password for Windows
+instances as standard. Unfortunately these use 2048-bit RSA keys. We’ll
+generate one here using the command:</p>
+<pre><code>ssh-keygen -t rsa -b 2048 </code></pre>
+<p>As before, just hit enter to accept all the defaults. You may have to
+enter <em>Yes</em> to overwrite the existing key(s) if they exist. Your
+SSH key pair will be stored in <em>two</em> files in the
+<code>.ssh</code> subdirectory of your home folder:</p>
+<ul>
+<li><code>id_rsa</code> stores the private key</li>
+<li><code>id_rsa.pub</code> stores the public key</li>
+</ul>
+<h1 id="task-5-microsoft-azure-acount-setup">Task 5: Microsoft Azure
+acount setup</h1>
+<p>We’ll also use Microsoft Azure in this module using the free credit
+for students offer. <a
+href="https://azure.microsoft.com/en-us/free/students">Sign up to Azure
+by visiting this link</a> and logging in with your <em>DkIT</em>
+credentials. You should use your full DkIT credentials to login.</p>
+<h2 id="azure-console">Azure console</h2>
+<p>After signing up, make sure you can see the Azure web console. Like
+AWS we’ll use it to begin with.</p>
+<h2 id="azure-cli">Azure CLI</h2>
+<p>Setting up the Azure CLI is much easier than AWS. Just run the
+command:</p>
+<pre><code>az login</code></pre>
+<p>Which will initiate first a graphical authentication flow, and will
+then let you select the required <em>subscription</em>. Make sure to
+choose the one that states <code>Azure for Students</code> and tenant
+<code>Dundalk Institute of Technology</code>:</p>
+<pre><code>[Tenant and subscription selection]
+
+No     Subscription name    Subscription ID                       Tenant
+-----  -------------------  ------------------------------------  -------------------------------
+[1] *  Azure for Students   2ade98b8-837d-4d50-b5a0-fda27c7eb599  Dundalk Institute of Technology
+
+The default is marked with an *; the default tenant is &#39;Dundalk Institute of Technology&#39; and subscription is &#39;Azure for Students&#39; (2ade98b8-837d-4d50-b5a0-fda27c7eb599).
+
+Select a subscription and tenant (Type a number or Enter for no changes): 1</code></pre>
+<p>If you have multiple subscriptions shown you’ll need to type the
+correct number for the <code>Dundalk Institute of Technology</code>
+subscription. It should then confirm:</p>
+<pre><code>Tenant: Dundalk Institute of Technology
+Subscription: Azure for Students (2ade98b8-837d-4d50-b5a0-fda27c7eb599)</code></pre>
+<h2 id="confirm-az-cli-works">Confirm az cli works</h2>
+<p>To confirm your Azure CLI works you can run the command:</p>
+<pre><code>az account show</code></pre>
+<p>It should print out your basic account information in JSON
+format.</p>
+<h1 id="task-6-aws-account-setup">Task 6: AWS account setup</h1>
+<p>We will also use an AWS account in this module. You previously have
+used an AWS account in Cloud Foundations and Cloud Technologies.</p>
+<h2 id="log-into-aws-console-on-the-web">Log into AWS Console on the
+web</h2>
+<p>Make sure that you can log into your AWS account on the website.</p>
+<h2 id="confirm-aws-account-works-on-the-console">Confirm AWS account
+works on the console</h2>
+<p>You can use any AWS command you like that requires authentication. I
+often use:</p>
+<pre><code>aws sts get-caller-identity</code></pre>
+<p>which just prints your account information.</p>
+</body>
+</html>
