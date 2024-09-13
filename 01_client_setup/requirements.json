@@ -1,0 +1,44 @@
+{
+    "commands": {
+	"ssh": {
+	},
+	"git":{
+	    "links": {
+		"windows": "https://github.com/git-for-windows/git/releases/download/v2.45.2.windows.1/Git-2.45.2-64-bit.exe"
+	    },
+	    "guidance": {
+		"mac": "install XCode to install git and other command-line tools"
+	    }
+	},
+	"pandoc": {
+	    "enabled": false,
+	    "links": {
+		"windows": "https://github.com/jgm/pandoc/releases/download/3.2.1/pandoc-3.2.1-windows-x86_64.msi"
+	    }
+	},
+	"python": {
+	    "enabled": true,
+	    "guidance": {
+		"windows": "Install from official python link, not via Window Store"
+	    }
+	},
+	"aws": {
+	    "enabled": true,
+	    "compulsory": true,
+	    "links": {
+		"windows": "https://awscli.amazonaws.com/AWSCLIV2.msi",
+		"mac": "https://awscli.amazonaws.com/AWSCLIV2.pkg"
+	    }
+	},
+	"az": {
+	    "enabled": true,
+	    "compulsory": true,
+	    "links": {
+		"windows": "https://aka.ms/installazurecliwindowsx64"
+	    },
+	    "guidance": {
+		"mac": "install using homebrew package manager"
+	    }
+	}
+    }
+}
