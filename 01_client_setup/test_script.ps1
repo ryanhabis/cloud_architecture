@@ -1,7 +1,6 @@
 #!/usr/bin/env pwsh
-# Test script to show PowerShell works
+# Test script to check PowerShell
 # Peadar Grant
 
-Write-Host 'PowerShell scripts work OK on this computer' -ForegroundColor Green
-
+Write-Host 'PowerShell scripts can run on this system' -ForegroundColor Green
 
