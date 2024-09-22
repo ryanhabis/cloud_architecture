@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Azure intro lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Azure intro lab</h1>
+</header>
+<p>In this lab we’ll take a basic introduction to Compute Instances on
+Azure. From previous work in AWS, where we’ve used both the
+<em>console</em> and the <em>cli</em> we’ll make use of both modes of
+interaction with Azure today. We will mainly use the GUI, supported by
+the CLI in a few places.</p>
+<p>Make sure you have signed up for Azure free credits, as per previous
+lab.</p>
+<h1 id="task-1-login-to-azure-on-the-web">Task 1: Login to Azure on the
+web</h1>
+<p>Login to <a href="https://portal.azure.com/#home">the Azure
+portal</a> via the Web browser.</p>
+<p>Use your DkIT credentials, which will require MFA.</p>
+<h1 id="task-2-confirm-student-subscription-on-the-web">Task 2: Confirm
+student subscription on the web</h1>
+<p>Once logged into Azure portal, navigate to the <a
+href="https://portal.azure.com/#view/Microsoft_Azure_Billing/SubscriptionsBladeV2">subscriptions</a>
+page.</p>
+<p>Make sure you see <em>Azure for Students</em> as the only item in the
+subscription list.</p>
+<h1 id="task-3-log-into-the-cli">Task 3: Log into the CLI</h1>
+<p>Open Windows Terminal, and run the command</p>
+<pre><code>az login</code></pre>
+<p>Use your DkIT login and follow the MFA prompts if asked. When asked
+about the subscription to login to, type <code>1</code> and press Enter.
+DkIT should be the only one shown.</p>
+<h1 id="task-4-test-if-the-cli-works">Task 4: Test if the CLI works</h1>
+<p>Open Windows Terminal, and run the command</p>
+<pre><code>az account show</code></pre>
+<p>It should return some JSON that looks like:</p>
+<pre><code>{
+    &quot;environmentName&quot;: &quot;AzureCloud&quot;,
+    &quot;homeTenantId&quot;: &quot;abcc9a4b-cf04-4ca3-9d83-3465e3f43f61&quot;,
+    &quot;id&quot;: &quot;2ddf9cb8-8fdd-4a55-cd50-3ddda3744599&quot;,
+    &quot;isDefault&quot;: true,
+    &quot;managedByTenants&quot;: [],
+    &quot;name&quot;: &quot;Azure for Students&quot;,
+    &quot;state&quot;: &quot;Enabled&quot;,
+    &quot;tenantDefaultDomain&quot;: &quot;studentdkit.onmicrosoft.com&quot;,
+    &quot;tenantDisplayName&quot;: &quot;Dundalk Institute of Technology&quot;,
+    &quot;tenantId&quot;: &quot;abcc9a4b-cf04-4ca3-9d83-3465e3f43f61&quot;,
+    &quot;user&quot;: {
+        &quot;name&quot;: &quot;grantp@dkit.ie&quot;,
+        &quot;type&quot;: &quot;user&quot;
+    }
+}</code></pre>
+<p>If you see this, then you’re logged in OK. Move on to the next
+task.</p>
+<h1 id="task-5-create-resource-group">Task 5: Create Resource Group</h1>
+<p>We’ll begin creating a <em>resource group</em>, which lets us
+visually and logically group resources belonging to a particular project
+or workload.</p>
+<ol type="1">
+<li>Open the <a
+href="https://portal.azure.com/#browse/resourcegroups">resource
+groups</a> page in the portal.</li>
+<li>Hit the <code>Create +</code> button.</li>
+<li>Set <em>Subscription</em> to <strong>Azure for
+Students</strong>.</li>
+<li>Set <em>Resource group</em> (the name) as <code>lab_rg</code>.</li>
+<li>Under <em>Resource Details</em> drop down <em>Region</em> to
+<strong>(Europe) West Europe</strong>.</li>
+<li>Click <em>Next</em> to go to the tags screen (which we won’t
+use).</li>
+<li>Click <em>Next</em> again. You should see a green <em>Validation
+passed.</em> message at the top. Your resource group hasn’t been created
+yet!</li>
+<li>Click <strong>Create</strong> at the bottom left (not the most
+intuitive place!).</li>
+</ol>
+<p>You will now be returned to the <em>Resource groups</em> page and see
+your new resource group shown in the list.</p>
+<h1 id="task-6-use-cli-to-list-resource-groups">Task 6: Use CLI to list
+resource groups</h1>
+<p>In Windows Terminal / PowerShell run the command</p>
+<pre><code>az group</code></pre>
+<p>It will show a list of subcommands. Run the appropriate subcommand to
+list the resource groups in your account. Does it correspond to the list
+shown on the web?</p>
+<h1 id="task-7-create-a-linux-vm">Task 7: Create a Linux VM</h1>
+<p>First we’ll create a Linux VM using the GUI and connect to it over
+SSH. This is a similar enough process to AWS but the default Networking
+configurations mean that there is a lot less housekeeping needed by
+default. In the Azure portal:</p>
+<ol type="1">
+<li>Go to the <code>Virtual Machines</code> tab.</li>
+<li>Click <code>+ Create</code> and choose <em>Azure Virtual
+Machine</em>.</li>
+</ol>
+<p>In the steps below, if an option isn’t mentioned in the instructions
+just leave it at its default value in the Azure portal.</p>
+<h2 id="basics">Basics</h2>
+<p>In the <em>Basics</em> tab:</p>
+<ol type="1">
+<li>Set <em>Subscription</em> dropdown to <strong>Azure for
+Students</strong>.</li>
+<li>In <em>Resource group</em> pick <strong>lab_rg</strong> that you
+created above.</li>
+<li>Moving on to <strong>Instance details</strong> set the <em>Virtual
+machine name</em> to <code>lab-linux</code>.</li>
+<li><em>Region</em> should be <strong>(Europe) West
+Europe</strong>.</li>
+<li>Under <em>Availability options</em> choose <strong>No infrastructure
+redundance required</strong>. This is very important for now!</li>
+<li>For <strong>Image</strong> choose
+<code>Ubuntu Server 24.04 LTS - x64 Gen2</code> from the dropdown.</li>
+<li>VM architecture should automatically set to
+<strong>x64</strong>.</li>
+</ol>
+<h3 id="basics-vm-sizing">Basics VM sizing</h3>
+<p>Very important! It’s very easy to accidentally pick the wrong
+(usually very expensive!) size of VM. Take your time doing this
+part!</p>
+<p>Under <strong>Size</strong> hit <em>See all sizes</em> and look for
+B1s.</p>
+<p>When you’ve selected it it should say:</p>
+<pre><code>Standard_B1s - 1 vcpu, 1 GiB memory ($8.76/month) (free services eligible)</code></pre>
+<h3 id="administrator-account">Administrator account</h3>
+<p>For the Administrator account settings, we’ll create an initial
+username and password for the machine. Don’t use your DkIT (or other)
+credentials here, but make sure that you remembe the values set. We will
+destroy the VM at the end of today’s lab.</p>
+<p>In <em>Authentication type</em> choose <strong>Password</strong>.</p>
+<p>The username can be anything valid for a Linux machine, suggest
+<code>student</code>.</p>
+<p>Fill in your chosen Password and Confirm it. You won’t be able to
+access this value again.</p>
+<h3 id="inbound-port-rules">Inbound port rules</h3>
+<p>For <em>Public inbound ports</em> choose <strong>Allow selected
+ports</strong>.</p>
+<p>The <em>Select inbound ports</em> will auto-populate with <strong>SSH
+(22)</strong> by default, which is what we need.</p>
+<p>Hit <code>Next : Disks</code> to go on to the next page.</p>
+<h2 id="disks">Disks</h2>
+<p>On the Disks page we can leave everything alone. Once the page has
+loaded fully hit <code>Next : Networking</code> to go on to the next
+page.</p>
+<h2 id="networking">Networking</h2>
+<p>Exactly as with Disks, we can leave everything on the networking page
+alone. Once the page has loaded fully hit <code>Next : Management</code>
+to move on.</p>
+<h2 id="management">Management</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Monitoring</code> to move on.</p>
+<h2 id="monitoring">Monitoring</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Advanced</code> to move on.</p>
+<h2 id="advanced">Advanced</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Tags</code> to move on.</p>
+<h2 id="tags">Tags</h2>
+<p>Same again, we’ll leave everything alone here. Once the page has
+loaded fully hit <code>Review and Create</code> to move on.</p>
+<h2 id="create">Create</h2>
+<p>Finally you can hit the blue <strong>Create</strong> button to create
+your VM.</p>
+<h1 id="task-8-find-vms-public-ip-address">Task 8: Find VMs public IP
+address</h1>
+<p>Linux, and increasingly Windows, machines are generally managed
+remotely using SSH.</p>
+<p>Find your Virtual Machine the azure portal listing of virtual
+machines, and look for the Public IP address.</p>
+<h1 id="task-9-connect-to-the-vm-using-ssh">Task 9: Connect to the VM
+using SSH</h1>
+<p>Open a second PowerShell session (separate to the one you’ve used so
+far). To do this, make a new Tab or Window in Windows terminal.</p>
+<p>In your new PowerShell session in Windows terminal run the
+command:</p>
+<pre><code>ssh student@ip-address-here</code></pre>
+<p>You will see a message like:</p>
+<pre><code>The authenticity of host &#39;40.91.203.149 (40.91.203.149)&#39; can&#39;t be established.
+ED25519 key fingerprint is SHA256:ttuJWpu8OULXt3iEMCVZv6L7n0puw7429kHYmtzB7Xc.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</code></pre>
+<p>Type <code>yes</code> and press enter in response.</p>
+<p>Enter your chosen password from above when prompted.</p>
+<p>You should then recognise the linux prompt:</p>
+<pre><code>student@lab-linux:~$ </code></pre>
+<p>For today we won’t do much in this VM, so we can type
+<code>exit</code> to quit the SSH session.</p>
+<h1 id="task-10-deletion-important">Task 10: Deletion (important!)</h1>
+<p><strong>Very important</strong> if you don’t delete VMs and other
+resource you’ll use up your Azure credits <em>very</em> quickly.</p>
+<p>The best way to delete work from a lab (or other project) is to
+delete the resource group to which everything belongs. This makes sure
+you haven’t forgotten anything, which will be important when we do labs
+that involve 2 or more VMs.</p>
+<p>Go to the <em>Resource groups</em> page and click into
+<code>lab_rg</code>.</p>
+<p>You’ll see a list of all resources in the resource group.</p>
+<p>Hit <strong>Delete resource group</strong> at the top.</p>
+<p>Under <em>Enter resource group name to confirm deletion</em> type
+<code>lab_rg</code>.</p>
+<p>Click the red <strong>Delete</strong> button and confirm with the red
+button in the dialog box.</p>
+</body>
+</html>
