@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Windows VM lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Windows VM lab</h1>
+</header>
+<h1 id="task-1-setup">Task 1: Setup</h1>
+<p>Login to <a href="https://portal.azure.com/#home">the Azure
+portal</a> via the Web browser. Use your DkIT credentials, which will
+require MFA.</p>
+<p>Ensure that the Azure CLI works correctly by running the command:</p>
+<pre><code>az account show</code></pre>
+<p>If this succeeds (by showing you your Azure account information) then
+you can move on to the next task. If this command fails, login to Azure
+using:</p>
+<pre><code>az login</code></pre>
+<p>Try the <code>az account show</code> command before moving on.</p>
+<h1 id="task-2-creating-a-resource-group">Task 2: Creating a resource
+group</h1>
+<p>Last time we created an Azure resource group using the portal. Today
+we’ll create an Azuzre resource group using the CLI.</p>
+<h2 id="showing-existing-resource-groups">Showing existing resource
+groups</h2>
+<p>First let’s list out the existing resource groups using the
+command:</p>
+<pre><code>az group list</code></pre>
+<p>There may be no groups, or just one called
+<code>NetworkWaterRG</code> which you can ignore. It’s internally used
+by some Azure features.</p>
+<h2 id="creating-the-new-group">Creating the new group</h2>
+<p>We’ll follow a pattern of using <code>lab_rg</code> as our resource
+group for lab work. This makes it easy to delete the resource group and
+all of its contents when finished.</p>
+<p>Create the new group called <code>lab_rg</code> in the
+<code>westeurope</code> (Ireland) region using the command</p>
+<pre><code>az group create --name lab_rg --location westeurope</code></pre>
+<p>It will return some information about the new group in JSON format
+(like most of the other commands). Confirm that your new group exists by
+listing out the groups in your account:</p>
+<pre><code>az group list</code></pre>
+<p><em>Notice that this is much shorter than the GUI-driven process from
+last week!</em></p>
+<h1 id="task-3-create-a-windows-vm">Task 3: Create a Windows VM</h1>
+<p>This lab we’ll instead create a Windows VM using the GUI and connect
+to it over RDP, and then over SSH. This is largely similar to the Linux
+VM. In the Azure portal:</p>
+<ol type="1">
+<li>Go to the <code>Virtual Machines</code> tab.</li>
+<li>Click <code>+ Create</code> and choose <em>Azure Virtual
+Machine</em>.</li>
+</ol>
+<p>In the steps below, if an option isn’t mentioned in the instructions
+just leave it at its default value in the Azure portal.</p>
+<h2 id="basics">Basics</h2>
+<p>In the <em>Basics</em> tab:</p>
+<ol type="1">
+<li>Set <em>Subscription</em> dropdown to <strong>Azure for
+Students</strong>.</li>
+<li>In <em>Resource group</em> pick <strong>lab_rg</strong> that you
+created above.</li>
+<li>Moving on to <strong>Instance details</strong> set the <em>Virtual
+machine name</em> to <code>lab-windows</code>.</li>
+<li><em>Region</em> should be <strong>(Europe) West
+Europe</strong>.</li>
+<li>Under <em>Availability options</em> choose <strong>No infrastructure
+redundance required</strong>. This is very important for now!</li>
+<li>For <strong>Image</strong> choose
+<code>Windows Server 2022 Datacenter: Azure Edition - x64 Gen2</code>
+from the dropdown.</li>
+<li>VM architecture should automatically set to
+<strong>x64</strong>.</li>
+</ol>
+<h3 id="basics-vm-sizing">Basics VM sizing</h3>
+<p>Very important! It’s very easy to accidentally pick the wrong
+(usually very expensive!) size of VM. Take your time doing this
+part!</p>
+<p>Under <strong>Size</strong> hit <em>See all sizes</em> and look for
+<strong>B2s</strong>.</p>
+<p>When you’ve selected it it should say:</p>
+<pre><code>Standard_B2s - Standard B2s (2 vcpus, 4 GiB memory)</code></pre>
+<p><em>Windows VMs are more expensive than Linux ones due to licensing
+cost!</em></p>
+<h3 id="administrator-account">Administrator account</h3>
+<p>For the Administrator account settings, we’ll create an initial
+username and password for the machine. Don’t use your DkIT (or other)
+credentials here, but make sure that you remembe the values set. We will
+destroy the VM at the end of today’s lab.</p>
+<p>The username can be anything valid for a Windows machine, suggest
+<code>developer</code>.</p>
+<p>Fill in your chosen Password and Confirm it. You won’t be able to
+access this value again.</p>
+<h3 id="inbound-port-rules">Inbound port rules</h3>
+<p>For <em>Public inbound ports</em> choose <strong>Allow selected
+ports</strong>.</p>
+<p>The <em>Select inbound ports</em> will auto-populate with <strong>RDP
+(3389)</strong> by default, which is what we need.</p>
+<p>Hit <code>Next : Disks</code> to go on to the next page.</p>
+<h2 id="disks">Disks</h2>
+<p>On the Disks page we can leave everything alone. Once the page has
+loaded fully hit <code>Next : Networking</code> to go on to the next
+page.</p>
+<h2 id="networking">Networking</h2>
+<p>Exactly as with Disks, we can leave everything on the networking page
+alone.</p>
+<p>Once the page has loaded fully hit <code>Next : Management</code> to
+move on.</p>
+<h2 id="management">Management</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Monitoring</code> to move on.</p>
+<h2 id="monitoring">Monitoring</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Advanced</code> to move on.</p>
+<h2 id="advanced">Advanced</h2>
+<p>Again, we’ll leave everything alone here. Once the page has loaded
+fully hit <code>Next : Tags</code> to move on.</p>
+<h2 id="tags">Tags</h2>
+<p>Same again, we’ll leave everything alone here. Once the page has
+loaded fully hit <code>Review and Create</code> to move on.</p>
+<h2 id="create">Create</h2>
+<p>Finally you can hit the blue <strong>Create</strong> button to create
+your VM.</p>
+<h1 id="task-4-find-vms-public-ip-address">Task 4: Find VMs public IP
+address</h1>
+<p>Windows machines are primarily managed by RDP, which provides access
+to the desktop session. Linux, and increasingly Windows, machines are
+also managed remotely using SSH.</p>
+<h2 id="using-the-azure-portal">Using the Azure Portal</h2>
+<p>Find your Virtual Machine the azure portal listing of virtual
+machines, and look for the Public IP address.</p>
+<h2 id="using-the-azure-cli">Using the Azure CLI</h2>
+<p>We’ll also find your Public IP using the Azure CLI. To understand
+this command better, try using:</p>
+<pre><code>az vm list</code></pre>
+<p>This is a lot of output. We could either use PowerShell’s
+capabilities to sort this or query for exactly what we need:</p>
+<pre><code>az vm show -d -g lab_rg -n lab-windows --query publicIps</code></pre>
+<p>This will get us just the information about the machine itself. We
+can use a modified version of the command to just output the Public
+IP:</p>
+<pre><code>az vm show -d -g lab_rg -n lab-windows --query publicIps </code></pre>
+<p>If you want to get rid of the quotes (because this is a degenerate
+JSON document), you can use:</p>
+<pre><code>az vm show -d -g lab_rg -n lab-windows --query publicIps -o tsv</code></pre>
+<p>You’ll get the IP address. You can either copy it with the mouse or
+pipe the IP directly into the Windows Clipboard.</p>
+<pre><code>az vm show -d -g lab_rg -n lab-windows --query publicIps -o tsv | Set-Clipboard</code></pre>
+<p><em>Some of these PowerShell operations might seem tedious, but it’s
+worth knowing how to build up commands. Once you know what it’s doing in
+future you can always skip to this last version!</em></p>
+<h1 id="task-5-connect-to-your-vm">Task 5: Connect to your VM</h1>
+<p>Search in the Start menu for <em>Windows Remote Desktop</em>.</p>
+<p>Paste the IP address into the box.</p>
+<p>Use the username and password you previously created to login.</p>
+<p>You will have to hit Yes on the certificate warning screen.</p>
+<p>You’ll finally see the Windows login progressing. In my experience
+Windows VMs can be slow to start (just as in AWS) on the smaller machine
+sizes. Eventually the Windows Server desktop will show.</p>
+<p><em>Well done on creating your first Windows VM on Azure.</em></p>
+<h1 id="task-6-enable-ssh-server-on-vm">Task 6: Enable SSH server on
+VM</h1>
+<p>Windows can be managed using SSH, which is often more convenient than
+running an RDP session. It also allows an estate of Windows and Linux
+servers to be managed and automated together.</p>
+<p>You can install OpenSSH server using the Install Windows Feature in
+the GUI or PowerShell on the guest VM. However, you can also use Azure’s
+management portal’s <em>SSH extension</em> to do this for you!</p>
+<h2 id="ssh-extension">SSH extension</h2>
+<p>We’ll follow <a
+href="https://learn.microsoft.com/en-us/azure/virtual-machines/windows/connect-ssh?tabs=azurecli">the
+instructions from Microsoft</a> on how to do this. The Azure guides are
+unusually well done (compared to AWS)!</p>
+<pre><code>az vm extension set -g lab_rg --vm-name lab-windows --name WindowsOpenSSH --publisher Microsoft.Azure.OpenSSH --version 3.0</code></pre>
+<h2 id="test-connectivity-locally-on-the-vm">Test connectivity locally
+on the VM</h2>
+<p>First we’ll try to connect using SSH to the VM itself. Open
+PowerShell and type:</p>
+<pre><code>ssh developer@127.0.0.1</code></pre>
+<p>If it even asks for your password your server is running.</p>
+<h2 id="test-connectivity-from-your-lab-pc">Test connectivity from your
+lab PC</h2>
+<p>Try to connect using SSH on your client PC:</p>
+<pre><code>ssh developer@ip-address-here</code></pre>
+<p>It won’t work!</p>
+<h1 id="task-7-network-security-rules">Task 7: Network security
+rules</h1>
+<p>We’ll now modify the network security rules to permit access via SSH.
+This is by way of adding a new rule to the Network Security Group.</p>
+<p>To do this, issue the command:</p>
+<pre><code>az network nsg rule create -g lab_rg --nsg-name lab-windows-nsg -n allow-SSH --priority 1000 --source-address-prefixes 0.0.0.0/0 --destination-port-ranges 22 --protocol TCP</code></pre>
+<p>Now try to connect over SSH and login again using the command:</p>
+<pre><code>ssh developer@ip-address-here</code></pre>
+<h1 id="task-8-change-default-shell">Task 8: Change default shell</h1>
+<p>Notice that you’re not actually in PowerShell, instead you’re at the
+old Command Prompt. You can start powershell by simply typing</p>
+<pre><code>powershell</code></pre>
+<p>Notice that the prompt now changes to the familiar PowerShell prompt
+and all commands work as expected.</p>
+<h2 id="changing-default-shell">Changing default shell</h2>
+<p>We can make Windows go straight to PowerShell on connection by
+issuing the command on the VM:</p>
+<pre><code>New-ItemProperty -Path &quot;HKLM:\SOFTWARE\OpenSSH&quot; -Name DefaultShell -Value &quot;C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe&quot; -PropertyType String  -Force</code></pre>
+<p>This very long command sets a <em>registry key</em> that controls
+what OpenSSH server does first in response to a new connection.</p>
+<p><strong>Without closing your first SSH session</strong> open a new
+Tab/Window in Windows Terminal and make a <em>second</em> SSH connection
+to your VM. It should now open directly with PowerShell (identifiable by
+the <code>PS</code> in the prompt).</p>
+<h1 id="task-9-delete-lab-resources">Task 9: Delete lab resources</h1>
+<p><strong>VERY IMPORTANT</strong> Delete all resources once you’re
+finished using them to save your Azure credits! You’re entirely
+responsible for managing your credits!</p>
+<p>Delete the lab resource group from the CLI using:</p>
+<pre><code>az group delete -n lab_rg</code></pre>
+<p>You should notice the RDP session (if open) terminates, the SSH
+connection(s) if open terminate(s). Once the command has finished then
+confirm that the resource group is gone in the Portal.</p>
+</body>
+</html>

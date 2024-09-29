@@ -1,4 +1,4 @@
-% Azure intro lab
+% Azure Linux VM intro lab
 
 In this lab we'll take a basic introduction to Compute Instances on Azure.
 From previous work in AWS, where we've used both the *console* and the *cli* we'll make use of both modes of interaction with Azure today.
