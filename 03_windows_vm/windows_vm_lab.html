@@ -229,7 +229,54 @@ what OpenSSH server does first in response to a new connection.</p>
 Tab/Window in Windows Terminal and make a <em>second</em> SSH connection
 to your VM. It should now open directly with PowerShell (identifiable by
 the <code>PS</code> in the prompt).</p>
-<h1 id="task-9-delete-lab-resources">Task 9: Delete lab resources</h1>
+<h1 id="task-9-use-sftp-to-transfer-files">Task 9: Use SFTP to transfer
+files</h1>
+<p>OpenSSH normally includes the SFTP server, which allows you to
+transfer files instead of interacting with the remote computer’s CLI.
+The <code>sftp</code> client program is text-based.</p>
+<p>Be aware that: 1. Although commands look similar to shell commands,
+e.g. <code>ls</code>, <code>cp</code>, they are interpreted a bit
+differently by the <code>sftp</code> client program. 2. You can’t run
+other commands on the remote machine. (Use a normal SSH session for
+that!)</p>
+<p>You are also dealing with <em>two working directories</em>, one on
+the remote machine and another on the local machine. - Many commands,
+e.g. <code>ls</code> normally operate on the remote side but the
+<code>lls</code> version works on the local side.</p>
+<h2 id="starting-an-sftp-session">Starting an SFTP session</h2>
+<ol type="1">
+<li>Use <code>ssh developer@ip-address-here</code> to open an SFTP
+session.</li>
+<li>It will ask you password just as with SSH.</li>
+<li>You will then be dropped into an SFTP session.</li>
+</ol>
+<h2 id="navigating">Navigating</h2>
+<p>Use <code>pwd</code> to display your current working directory on the
+remote side, and <code>ls</code> to list it out. Similarly use
+<code>lpwd</code> and <code>lls</code> to list out the local
+directory.</p>
+<p>Navigate using <code>lcd</code> to a folder containing files on the
+local side.</p>
+<h2 id="sending-files-to-remote-host">Sending files to remote host</h2>
+<p>We’re going to send some files to the remote side.</p>
+<p>On the remote side navigate to the <code>Desktop</code> folder and
+create a new folder called <code>my_new_folder</code>. Change directory
+into the new folder.</p>
+<p>Navigate using <code>lcd</code> to a folder containing files on the
+local side. Use <code>lls</code> to list them out. Pick a file and use
+<code>put filename</code> to send it to the remote side.</p>
+<p>Confirm on the desktop (over RDP) and in your SSH session that you
+can see the new file.</p>
+<h2 id="retrieving-files-from-remote-host">Retrieving files from remote
+host</h2>
+<p>We’ll now do the reverse.</p>
+<p>On your RDP session create a new text file in Notepad on the
+Desktop.</p>
+<p>In your SFTP session navigate to the Desktop folder on the remote
+side. Also navigate to the Desktop folder on the local side.</p>
+<p>Use <code>get filename</code> to copy the file from the remote host
+to your local PC.</p>
+<h1 id="task-10-delete-lab-resources">Task 10: Delete lab resources</h1>
 <p><strong>VERY IMPORTANT</strong> Delete all resources once you’re
 finished using them to save your Azure credits! You’re entirely
 responsible for managing your credits!</p>

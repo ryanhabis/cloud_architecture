@@ -283,8 +283,59 @@ This very long command sets a *registry key* that controls what OpenSSH server d
 It should now open directly with PowerShell (identifiable by the `PS` in the prompt).
 
 
+# Task 9: Use SFTP to transfer files
 
-# Task 9: Delete lab resources
+OpenSSH normally includes the SFTP server, which allows you to transfer files instead of interacting with the remote computer's CLI.
+The `sftp` client program is text-based.
+
+Be aware that:
+1. Although commands look similar to shell commands, e.g. `ls`, `cp`, they are interpreted a bit differently by the `sftp` client program.
+2. You can't run other commands on the remote machine. (Use a normal SSH session for that!)
+
+You are also dealing with *two working directories*, one on the remote machine and another on the local machine.
+- Many commands, e.g. `ls` normally operate on the remote side but the `lls` version works on the local side.
+
+## Starting an SFTP session
+
+1. Use `ssh developer@ip-address-here` to open an SFTP session.
+2. It will ask you password just as with SSH.
+3. You will then be dropped into an SFTP session.
+
+## Navigating
+
+Use `pwd` to display your current working directory on the remote side, and `ls` to list it out.
+Similarly use `lpwd` and `lls` to list out the local directory.
+
+Navigate using `lcd` to a folder containing files on the local side.
+
+
+## Sending files to remote host
+
+We're going to send some files to the remote side.
+
+On the remote side navigate to the `Desktop` folder and create a new folder called `my_new_folder`.
+Change directory into the new folder.
+
+Navigate using `lcd` to a folder containing files on the local side.
+Use `lls` to list them out.
+Pick a file and use `put filename` to send it to the remote side.
+
+Confirm on the desktop (over RDP) and in your SSH session that you can see the new file.
+
+
+## Retrieving files from remote host
+
+We'll now do the reverse.
+
+On your RDP session create a new text file in Notepad on the Desktop.
+
+In your SFTP session navigate to the Desktop folder on the remote side.
+Also navigate to the Desktop folder on the local side.
+
+Use `get filename` to copy the file from the remote host to your local PC.
+
+
+# Task 10: Delete lab resources
 
 **VERY IMPORTANT** Delete all resources once you're finished using them to save your Azure credits!  You're entirely responsible for managing your credits!
 
