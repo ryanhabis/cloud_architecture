@@ -1,0 +1,25 @@
+digraph G {
+
+    rankdir=LR;
+
+    subgraph cluster_lab {
+	label="Lab environment";
+	client [ label="Client PC" ];
+    }
+    
+    subgraph cluster_azure {
+	label="Azure environment";
+	subgraph cluster_rg {
+	    label="lab_rg resource group";
+	    
+	    linux [ label="Linux instance" ];
+	    windows [ label="Windows instance" ];
+	}
+    }
+
+    client -> linux [label="SSH, (IRC 6667)"];
+    client -> windows [label="RDP, SSH"];
+
+    windows-> linux [label="IRC"] ;
+    
+}

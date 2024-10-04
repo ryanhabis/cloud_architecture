@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>IRC Deployment Lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">IRC Deployment Lab</h1>
+</header>
+<p>This lab will be a bit harder than previous labs - you will not be
+given the commands needed if you’ve seen them before!</p>
+<h1 id="task-1-azure-login">Task 1: Azure login</h1>
+<p>Make sure you can login to the <a
+href="https://portal.azure.com">Azure portal</a> with your DkIT
+credentials.</p>
+<p>Also make sure that the <code>az</code> command functions correctly
+by using:</p>
+<pre><code>az account show</code></pre>
+<h1 id="task-2-resource-group-creation">Task 2: Resource group
+creation</h1>
+<p>Use the Azure CLI to create a Resource Group named
+<code>lab_rg</code> located in Europe (West) as we’ve done in previous
+labs. See Windows VM Lab Task 2 to remind you.</p>
+<h1 id="task-3-linux-server-setup">Task 3: Linux Server setup</h1>
+<p>Use the instructions from Linux VM Lab Tasks 7-9 to create a Linux VM
+named <code>lab-linux</code> and connect to it over SSH.</p>
+<p><strong>Note:</strong> you can skip straight to the Review and Create
+step after the first page.</p>
+<p>Note down its IP address.</p>
+<h1 id="task-4-install-irc-server-on-linux">Task 4: Install IRC server
+on Linux</h1>
+<p>Log into the linux VM over SSH.</p>
+<h2 id="software-update">Software update</h2>
+<p>Update the software repository list and installed packages using:</p>
+<pre><code>sudo apt -y update &amp;&amp; sudo apt -y upgrade</code></pre>
+<h2 id="install-irc-server">Install IRC server</h2>
+<p>We’re going to install the <code>ngircd</code> IRC server on the
+linux machine.</p>
+<p>To do this run:</p>
+<pre><code>sudo apt -y install ngircd</code></pre>
+<p><em>Question:</em> can you see how you’d combine the installation
+commands with the ones above?</p>
+<h1 id="task-5-install-irc-client-on-linux">Task 5: Install IRC client
+on linux</h1>
+<p>Log into the Linux server on a second SSH connection.</p>
+<p>We’re going to install a text-based IRC client on Linux, here
+<code>irssi</code>.</p>
+<p>Use the example above from <code>ngircd</code> to write the command
+to install <code>irssi</code>.</p>
+<h1 id="task-6-test-irc-works-on-localhost">Task 6: Test IRC works on
+localhost</h1>
+<p>Launch <code>irssi</code> using the command:</p>
+<pre><code>irssi</code></pre>
+<p>This will open a full-screen application. IRC normally accepts
+commands in text form.</p>
+<h2 id="connect-to-local-server">Connect to local server</h2>
+<p>To connect to localhost, we type:</p>
+<pre><code>/CONNECT 127.0.0.1</code></pre>
+<p>If <code>ngircd</code> is working you should see a message that ends
+with <code>End of MOTD command</code> or similar.</p>
+<p>By default there is no authentication. (It can be setup on the server
+if needed.)</p>
+<h2 id="join-a-channel">Join a channel</h2>
+<p>Let’s now join a channel. IRC servers sometimes have channels pre
+setup on them. Just as with the loose authentication options, by default
+IRC servers permit any user to create a channel. Let’s do that now:</p>
+<pre><code>/JOIN #GENERAL</code></pre>
+<p>Note the hash tag before the channel name, just as used in modern
+social media.</p>
+<h1 id="task-7-tunneling-ssh">Task 7: Tunneling SSH</h1>
+<p>SSH has a <em>very</em> handy feature called
+<strong>Tunnelling</strong>.</p>
+<p>Tunnelling lets us open a port on our local machine and
+<em>forward</em> it to the remote machine (or any machine on the remote
+machine’s network). It’s almost like a mini VPN. Tunnelling can co-exist
+with a normal interactive login session.</p>
+<p>Open a new SSH session to your <code>lab-linux</code> machine
+using:</p>
+<pre><code>ssh -L6667:127.0.0.1:6667 student@linux-ip-address-here</code></pre>
+<p>The <code>-L</code> option opens port 6667 (the standard IRC port) on
+the local machine and forwards it to the remote machine, where it will
+send traffic to 127.0.0.1 (itself) on port 6667.</p>
+<h1 id="task-7-installing-irc-on-local-pc">Task 7: Installing IRC on
+local PC</h1>
+<p><a href="https://www.mirc.com/get.html">Install MIRC</a></p>
+<h2 id="configuration">Configuration</h2>
+<p>When it opens go to Server dropdown and click the button beside it,
+then Add.</p>
+<pre><code>Description: localhost
+Address: 127.0.0.1</code></pre>
+<p>Leave everything else alone and click <code>OK</code>.</p>
+<h2 id="connection">Connection</h2>
+<p>Drop down your new Server setting in the list. Put <code>lab</code>
+in the Nickname. Hit <code>Connect</code> .</p>
+<p>You should see a similar message in MIRC as you saw in
+<code>irssi</code>. Close the Favourites window that pops up.</p>
+<h1 id="joining-channel">Joining Channel</h1>
+<p>You can browse channels etc in the GUI but the same commands also
+work here. In the command box type</p>
+<pre><code>/JOIN #GENERAL</code></pre>
+<p>Look at your linux box and notice that it shows the <code>lab</code>
+user has joined.</p>
+<h1 id="try-out-chat">Try out chat</h1>
+<p>At this point you can type messages in the command window which will
+fill up in the chat just like WhatsApp / Teams etc.</p>
+<h1 id="task-8-windows-setup">Task 8: Windows setup</h1>
+<p>Just as with the Linux machine, use Tasks 3 and 4 to setup
+<code>lab-windows</code> and get its IP address.</p>
+<p>Note that by default it will be in the existing VNet
+<code>lab-linux-vnet</code> which is what we want.</p>
+<p>Connect to <code>lab-windows</code> over RDP.</p>
+<p><a href="https://www.mirc.com/get.html">Install MIRC</a></p>
+<h2 id="confirm-connectivity">Confirm connectivity</h2>
+<p>Confirm that you can SSH from Windows To the Linux machine using the
+Private IP addresses.</p>
+<h2 id="configuration-1">Configuration</h2>
+<p>Run MIRC. When it opens go to Server dropdown and click the button
+beside it, then Add.</p>
+<pre><code>Description: lab-linux
+Address: IP of linux machine here</code></pre>
+<p>Leave everything else alone and click <code>OK</code>.</p>
+<h2 id="connection-1">Connection</h2>
+<p>Drop down your new Server setting in the list. Put
+<code>windows</code> in the Nickname. Hit <code>Connect</code> .</p>
+<p>The connection will fail because we need to add a rule in the network
+security group.</p>
+<h1 id="task-9-network-security-group-changes">Task 9: network security
+group changes</h1>
+<p>Look back at the changes in the Network security group made in
+Windows VM Lab Task 7. Use the command to add a rule to the
+<strong>LINUX</strong> VM to permit connections on port 6667.</p>
+<pre><code>az network nsg rule create -g lab_rg --nsg-name lab-windows-nsg -n allow-IRC --priority 1000 --source-address-prefixes 0.0.0.0/0 --destination-port-ranges 6667 --protocol UDP</code></pre>
+<h2 id="try-reconnecting">Try reconnecting</h2>
+<p>You should see the similar message in MIRC as you saw in
+<code>irssi</code>. Close the Favourites window that pops up.</p>
+<h2 id="joining-channel-1">Joining Channel</h2>
+<p>You can browse channels etc in the GUI but the same commands also
+work here. In the command box type</p>
+<pre><code>/JOIN #GENERAL</code></pre>
+<p>Look at your linux box and notice that it shows the <code>lab</code>
+user has joined.</p>
+<h2 id="try-out-chat-1">Try out chat</h2>
+<p>At this point you can type messages in the command window which will
+fill up in the chat just like WhatsApp / Teams etc.</p>
+<h1 id="delete-all-resources">Delete all resources</h1>
+<p>When you’ve finished the lab, delete all resources by deleting your
+resource group!</p>
+<p><strong>VERY IMPORTANT</strong> Delete all resources once you’re
+finished using them to save your Azure credits! You’re entirely
+responsible for managing your credits!</p>
+<p>Delete the lab resource group from the CLI using:</p>
+<pre><code>az group delete -n lab_rg</code></pre>
+<p>You should notice the RDP session (if open) terminates, the SSH
+connection(s) if open terminate(s). Once the command has finished then
+confirm that the resource group is gone in the Portal.</p>
+</body>
+</html>
