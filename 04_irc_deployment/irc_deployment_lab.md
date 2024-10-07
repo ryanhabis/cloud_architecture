@@ -182,7 +182,7 @@ The connection will fail because we need to add a rule in the network security g
 Look back at the changes in the Network security group made in Windows VM Lab Task 7.
 Use the command to add a rule to the **LINUX** VM to permit connections on port 6667.
 
-	az network nsg rule create -g lab_rg --nsg-name lab-windows-nsg -n allow-IRC --priority 1000 --source-address-prefixes 0.0.0.0/0 --destination-port-ranges 6667 --protocol UDP
+	az network nsg rule create -g lab_rg --nsg-name lab-linux-nsg -n allow-IRC --priority 1000 --source-address-prefixes 0.0.0.0/0 --destination-port-ranges 6667 --protocol TCP
 
 ## Try reconnecting
 
