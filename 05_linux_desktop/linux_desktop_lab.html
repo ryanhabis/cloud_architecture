@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Linux desktop lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Linux desktop lab</h1>
+</header>
+<p><strong>Note:</strong> A number of commands needed here aren’t given.
+You should refer back to previous labs. Hopefully they’ll soon be
+committed to your memory!</p>
+<p><a
+href="https://learn.microsoft.com/en-us/azure/virtual-machines/linux/use-remote-desktop?tabs=azure-cli">Microsoft
+guide</a></p>
+<h1 id="task-0-azure-login">Task 0: Azure login</h1>
+<p>Log in to the Azure portal.</p>
+<p>Make sure that the <code>az</code> command works.</p>
+<pre><code>az account show</code></pre>
+<p><em>I won’t be repeating this part again!</em></p>
+<h1 id="task-1-create-resource-group">Task 1: Create resource group</h1>
+<p>Use the CLI to create a resource group called <code>lab_rg</code> in
+the <code>westeurope</code> region.</p>
+<p>If you’re not sure what command to use, just try</p>
+<pre><code>az group </code></pre>
+<p>and it’ll show some helpful hints.</p>
+<h1 id="task-2-create-linux-vm">Task 2: Create Linux VM</h1>
+<p>Follow the instructions from previous labs to create a Linux VM as
+follows. The defaults are fine if not specified:</p>
+<ul>
+<li><strong>Resource group:</strong> <code>lab_rg</code></li>
+<li><strong>Virtual machine name:</strong>
+<code>linux-desktop</code></li>
+<li><strong>Availability options:</strong> No infrastructure redundancy
+required</li>
+<li><strong>Image:</strong> Ubuntu Server 24.04 LTS - x64 Feb2</li>
+<li><strong>Size:</strong> Standard_B1s - 1 vcpu, 1 GiB memory</li>
+<li><strong>Authentication type:</strong> Password</li>
+<li><strong>Username:</strong> <code>developer</code></li>
+<li><strong>Password:</strong> <em>one you’ll remember</em></li>
+</ul>
+<p>You can then go straight to <strong>Review and Create</strong> and
+hit the <strong>Create</strong> button.</p>
+<p>Save the IP address somewhere, suggest in Notepad and a PowerShell
+Variable called <code>$LinuxDesktopIp</code>.</p>
+<h1 id="task-3-confirm-ssh-connectivity">Task 3: Confirm SSH
+connectivity</h1>
+<p>At this point you should test connectivity over SSH.</p>
+<p>To make sure that the machine is listening on Port 22 you can use the
+following in PowerShell:</p>
+<pre><code>Test-NetConnection -Port 22 -ComputerName $LinuxDesktopIp</code></pre>
+<p>You can then try ssh-ing to the machine</p>
+<pre><code>ssh developer@$LinuxDesktopIp</code></pre>
+<h1 id="task-4-software-update">Task 4: Software Update</h1>
+<p>Use the standard commands to update the package list and perform any
+eligible upgrades:</p>
+<pre><code>sudo apt -y update &amp;&amp; sudo apt -y upgrade</code></pre>
+<p>The <code>-y</code> switch avoids a yes/no prompt.</p>
+<h1 id="task-5-desktop-installation">Task 5: Desktop installation</h1>
+<p>Unlike Windows or Mac, Linux has a number of options for desktops.
+The choice can be complicating in itself. Multiple desktop managers can
+even be installed at the same time, with the login user determining
+which one operates.</p>
+<h2 id="desktop-manager">Desktop manager</h2>
+<p>We’re going to install a very basic desktop manager, <a
+href="https://www.xfce.org/">xfce</a>, that is light on resources and
+does not require too much configuration.</p>
+<pre><code>sudo apt -y install xfce4</code></pre>
+<p>The installation could take a few minutes.</p>
+<h2 id="session-manager">Session manager</h2>
+<p>Then we’ll install the <em>session manager</em> which provides the
+login screen:</p>
+<pre><code>sudo apt -y install xfce4-session</code></pre>
+<h1 id="task-6-xrdp">Task 6: XRDP</h1>
+<p>Just as we use <code>sshd</code> to expose the shell over a network,
+we’ll use a program called <code>xrdp</code> to expose graphical desktop
+sessions over the Microsoft RDP protocol. There are a few ways to
+provide remote access to the physical console (same as monitor,
+keyboard, mouse) or virtual desktop sessions on Linux, including VNC.
+RDP is handy if you want to connect from Microsoft Windows clients as
+the client is installed by default.</p>
+<h2 id="install-xrdp-server">Install XRDP server</h2>
+<p>Install the <code>xrdp</code> package</p>
+<pre><code>sudo apt -y install xrdp</code></pre>
+<h2 id="enable-the-rdp-server">Enable the RDP server</h2>
+<p>Enable the RDP server to start on boot</p>
+<pre><code>sudo systemctl enable xrdp</code></pre>
+<h2 id="ssl-access">SSL access</h2>
+<p>XRDP uses SSL certificates and needs to be in the linux group to
+enable it to access them:</p>
+<pre><code>sudo adduser xrdp ssl-cert</code></pre>
+<h2 id="check-xrdp-status">Check XRDP status</h2>
+<p>XRDP runs as a <em>system service</em> in Linux. We can check its
+status using:</p>
+<pre><code>systemctl status xrdp</code></pre>
+<p>It should say <code>active (running)</code>.</p>
+<h2 id="restart-xrdp">Restart XRDP</h2>
+<p>Let’s restart XRDP so it picks up changes:</p>
+<pre><code>sudo systemctl restart xrdp</code></pre>
+<h1 id="task-7-firewall-changes">Task 7: Firewall changes</h1>
+<p>RDP runs on port 3389.</p>
+<h2 id="test-connectivity">Test connectivity</h2>
+<p>First let’s use Test-NetConnection from our client PC to check if the
+RDP server is accessible:</p>
+<pre><code>Test-NetConnection -Port 3389 -ComputerName $LinuxDesktopIp</code></pre>
+<p>If this works it should say <code>TcpTestSucceeded : True</code>. It
+probably won’t.</p>
+<h2 id="open-port">Open port</h2>
+<p>We can use a simpler command than before to open a port to the
+relevant machine:</p>
+<pre><code>az vm open-port --resource-group lab_rg --name linux-desktop --port 3389</code></pre>
+<p><em>This isn’t the most secure configuration!</em></p>
+<h2 id="check-connectivity-again">Check connectivity again</h2>
+<p>Re-try the <code>Test-NetConnection</code> from above. It should now
+say: <code>TcpTestSucceeded : True</code>.</p>
+<p>Don’t move on until it does!</p>
+<h1 id="task-8-rdp-login">Task 8: RDP login</h1>
+<p>Open <em>Remote Desktop Connection</em> and put in your Linux
+machine’s IP address.</p>
+<p>Put in the username and password at the prompt that opens. You’ll
+then see (hopefully!) a Linux desktop running the XFCE4 environment
+which is similar enough to Mac or Windows.</p>
+<h2 id="second-login">Second login</h2>
+<p>Test what happens if you leave the session open and login again as
+the same user.</p>
+<h1 id="task-9-second-user">Task 9: Second user</h1>
+<p>Linux (and Windows) are inherently multi-user systems. We can make a
+second user account</p>
+<pre><code>sudo adduser tester
+sudo usermod -aG sudo tester
+sudo passwd tester</code></pre>
+<h2 id="ssh-in-as-tester-user">SSH in as tester user</h2>
+<p>Make a new SSH connection as the <code>tester</code> user:</p>
+<pre><code>ssh tester@$LinuxDesktopIp</code></pre>
+<p>Then put the XFCE4 session in the <code>.xsession</code> file.</p>
+<pre><code>echo xfce4-session &gt;~/.xsession</code></pre>
+<h1 id="important-delete-resources">Important: delete resources</h1>
+<p>Delete the resource group! Command is:</p>
+<pre><code>az group delete -n lab_rg</code></pre>
+<p>Answer <code>y</code>, <strong>wait for it to finish</strong>.
+Confirm in the GUI that the resource group has been deleted.</p>
+</body>
+</html>
