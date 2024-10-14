@@ -92,6 +92,9 @@ does not require too much configuration.</p>
 <p>Then we’ll install the <em>session manager</em> which provides the
 login screen:</p>
 <pre><code>sudo apt -y install xfce4-session</code></pre>
+<p>Set our default xsession to xfce4 for the <code>developer</code>
+user:</p>
+<pre><code>echo xfce4-session &gt;~/.xsession</code></pre>
 <h1 id="task-6-xrdp">Task 6: XRDP</h1>
 <p>Just as we use <code>sshd</code> to expose the shell over a network,
 we’ll use a program called <code>xrdp</code> to expose graphical desktop

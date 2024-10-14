@@ -90,6 +90,10 @@ Then we'll install the *session manager* which provides the login screen:
 
 	sudo apt -y install xfce4-session
 
+Set our default xsession to xfce4 for the `developer` user: 
+
+	echo xfce4-session >~/.xsession
+
 
 
 # Task 6: XRDP
