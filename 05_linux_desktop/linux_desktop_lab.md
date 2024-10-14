@@ -38,7 +38,7 @@ The defaults are fine if not specified:
 - **Virtual machine name:** `linux-desktop`
 - **Availability options:** No infrastructure redundancy required
 - **Image:** Ubuntu Server 24.04 LTS - x64 Feb2
-- **Size:** Standard_B1s - 1 vcpu, 1 GiB memory
+- **Size:** Standard_B2s 
 - **Authentication type:** Password
 - **Username:** `developer` 
 - **Password:** *one you'll remember*
