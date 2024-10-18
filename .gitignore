@@ -8,3 +8,5 @@
 *.toc
 *.pdf
 *.html
+/06_chat_system/TeamBot/target/
+/05_linux_desktop/CheckIn/target/
