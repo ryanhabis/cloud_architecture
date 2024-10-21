@@ -1,0 +1,14 @@
+[Unit]
+Description=TeamBot
+
+[Service]
+User=developer
+Group=developer
+WorkingDirectory=/home/developer
+ExecStart=/usr/bin/java -jar TeamBot-jar-with-dependencies.jar
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

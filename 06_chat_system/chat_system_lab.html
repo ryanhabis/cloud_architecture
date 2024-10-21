@@ -28,6 +28,9 @@
 <header id="title-block-header">
 <h1 class="title">Chat system lab</h1>
 </header>
+<p>Important links: - <a
+href="https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment">Azure
+guide to cloud-init customisation</a></p>
 <h1 id="task-0-login">Task 0: Login</h1>
 <p>Login to the <a href="https://portal.azure.com/">Azure portal</a> and
 make sure that you can run the <code>az</code> command. See previous
@@ -41,14 +44,56 @@ system with cloud init</h1>
 <p>Re-do creation of VM and paste the contents of
 <code>vm_config.yml</code> into the <strong>Custom Data</strong> box on
 the <em>Advanced</em> page.</p>
-<p>Log in and check that everything has been installed
-automatically.</p>
+<p>Log in and check that everything has been installed automatically.
+This may take some time!</p>
 <h1 id="task-3-build-the-teambot-program">Task 3: Build the TeamBot
 program</h1>
 <p>On your lab PC, open the TeamBot program in NetBeans and Build the
 project. It <em>should</em> build with no errors (checked
 18/10/2024).</p>
 <p>Make sure you can understand roughly what the code does.</p>
-<p>https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment</p>
+<h1 id="task-4-teambot-locally-on-pc">Task 4: TeamBot locally on PC</h1>
+<p>On your lab PC open a new connection to your VM.</p>
+<pre><code>ssh -L6667:127.0.0.1:6667 developer@your-ip-here</code></pre>
+<p>Run TeamBot in NetBeans by clicking Run. Test it out to see if it
+responds to <code>?coffee</code>.</p>
+<h1 id="task-5-upload-teambot-to-the-server">Task 5: Upload TeamBot to
+the server</h1>
+<p>On your lab PC open a new tab in Windows Terminal. Navigate to the
+<code>TeamBot/target</code> folder (or use <em>Open in terminal</em>
+from File Explorer).</p>
+<p>Open an SFTP connection to the VM:</p>
+<pre><code>sftp developer@your-ip-here</code></pre>
+<p>Upload the JAR with dependencies and then exit:</p>
+<pre><code>put TeamBot-jar-with-dependencies.jar 
+exit</code></pre>
+<h1 id="task-6-run-teambot-on-the-server">Task 6: Run TeamBot on the
+server</h1>
+<p>In one SSH session make sure you have <code>irssi</code> client open
+and connected to the local machine and the <code>#general</code> channel
+open. If not, go back to instructions above.</p>
+<p>Open a second SSH session run the bot using</p>
+<pre><code>java -jar TeamBot-jar-with-dependencies.jar </code></pre>
+<p>Test that the bot works by going back to first session and running
+commands.</p>
+<h1 id="task-7-bot-as-a-system-service">Task 7: Bot as a system
+service</h1>
+<p>Change into the systemd/system folder</p>
+<pre><code>cd /etc/systemd/system</code></pre>
+<p>Open a new service unit file:</p>
+<pre><code>sudo nano teambot.service</code></pre>
+<p>Copy and paste in the contents of the <code>teambot.service</code>
+file from your lab PC. Save using Ctrl-X, answer Y and press enter to
+quit.</p>
+<p>Reload the service unit files</p>
+<pre><code>sudo systemctl daemon-reload</code></pre>
+<p>Enable teambot on startup</p>
+<pre><code>sudo systemctl enable teambot</code></pre>
+<p>Start teambot</p>
+<pre><code>sudo systemctl start teambot</code></pre>
+<p>If you look over at your <code>irssi</code> client you should see
+TeamBot has joined the room. Test it out as before.</p>
+<p>Reboot the machine and confirm that it restarts TeamBot without any
+action from you.</p>
 </body>
 </html>
