@@ -1,0 +1,45 @@
+digraph G {
+
+    rankdir=LR;
+
+    subgraph cluster_azure {
+
+	label="Azure";
+
+	subgraph cluster_vm {
+
+	    label="Linux VM" ;
+
+	    sshd [ label="sshd", shape="rectangle", style=filled, fillcolor=lightyellow ] ;
+	    bash [ label="bash", shape="rectangle", style=filled, fillcolor=lightyellow ] ;
+
+	    xrdp [ label="xrdp server", shape="rectangle", style=filled, fillcolor=palegreen ] ;
+	    xfce [ label="X Desktop\nEnvironment\n(xfce)", shape="rectangle", style=filled, fillcolor=palegreen ] ;
+
+	    sshd -> bash ;
+	    xrdp -> xfce ;
+	}
+    }
+
+    subgraph cluster_lab {
+
+	label="Lab";
+	style="dotted";
+	
+	subgraph cluster_client {
+
+	    label="Client PC";
+	    
+
+	    ssh [ label="SSH client", shape="rectangle", style=filled, fillcolor=lightyellow ] ;
+	    
+	    rdc [ label="Remote\nDesktop\nConnection", shape="rectangle", style=filled, fillcolor=palegreen ] ;
+	    
+	}
+	
+    }
+
+    ssh -> sshd [label="SSH (22)"]; 
+    rdc -> xrdp [label="RDP (3389)"] ; 
+    
+}

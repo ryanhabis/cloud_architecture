@@ -138,7 +138,14 @@ It should say `active (running)`.
 Let's restart XRDP so it picks up changes:
 
 	sudo systemctl restart xrdp
+
+
+## XSession file
+
+Then put the XFCE4 session in the `.xsession` file.
 	
+	echo xfce4-session >~/.xsession
+
 
 # Task 7: Firewall changes
 
@@ -186,7 +193,7 @@ Test what happens if you leave the session open and login again as the same user
 # Task 9: Second user
 
 Linux (and Windows) are inherently multi-user systems.
-We can make a second user account 
+We can make a second user account (here called `tester`)
 
 	sudo adduser tester
 	sudo usermod -aG sudo tester

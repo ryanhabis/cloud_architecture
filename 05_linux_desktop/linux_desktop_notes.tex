@@ -1,0 +1,75 @@
+\documentclass[slides]{pgnotes}
+
+\title{Linux desktop}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\section{Remote desktop protocol}
+
+\textbf{Remote Desktop Protocol (RDP)} is commonly used to access Windows desktops:
+\begin{itemize}
+\item RDP runs on \textbf{Port 3389}.
+  \begin{itemize}
+  \item Normally TCP but can use UDP as well for better performance.
+  \end{itemize}
+\item Clients on many different OSes.
+  \begin{itemize}
+  \item RDP client is normally standard on Windows client installations.
+  \item Usually available, even in restricted client environments.
+  \end{itemize}
+\item Normally a session can only be accessed by a single RDP or physical console session.
+  \begin{itemize}
+  \item Remote assist breaks this rule!
+  \item Usually the latest connection ``picks up'' a running session.
+  \end{itemize}
+\item On Windows a session can transfer between physical console and RDP session.
+\end{itemize}
+
+
+\subsection{Terminal services}
+
+\begin{center}
+  \includegraphics[width=0.8\linewidth]{terminal_services}
+\end{center}
+
+
+
+\subsection{Linux}
+
+Linux can provide terminal-services-like functionality:
+\begin{itemize}
+\item Historically linux has used an alternative protocol called VNC to access graphical desktops remotely.
+\item Also has remote-X for single applications (only good on LAN!)
+\item Alternative is XRDP which provides an RDP-compatible server:
+  \begin{itemize}
+  \item Standard Windows Remote Desktop Connection client can be used.
+  \item Great in restricted client environments.
+  \end{itemize}
+\item Depending on setup can do either:
+  \begin{itemize}
+  \item Floating desktop per user (volatile or persistent).
+  \item Attach to physical console.
+  \end{itemize}
+\end{itemize}
+
+\subsection{RDP server}
+
+\begin{center}
+  \includegraphics[width=0.7\linewidth]{rdp}
+\end{center}
+
+
+
+\section{Scenario}
+
+
+
+\subsection{Motivation}
+
+
+
+\end{document}

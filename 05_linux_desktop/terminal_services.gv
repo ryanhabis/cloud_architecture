@@ -1,0 +1,26 @@
+digraph G {
+
+    rankdir=LR;
+
+    alice [ label="Alice's Client PC", shape="rectangle", style=filled, fillcolor=lightblue ];
+    bob [ label="Bob's Client PC", shape="rectangle", style=filled, fillcolor=lightblue ];
+    mary [ label="Mary's Client PC PC", shape="rectangle", style=filled, fillcolor=lightblue ];
+
+    subgraph cluster_host {
+	label="Terminal services host";
+
+	aliced [ label="Alice's desktop", shape="rectangle", style=filled, fillcolor=palegreen ];
+	bobd [ label="Bob's desktop", shape="rectangle", style=filled, fillcolor=palegreen ];
+	maryd [ label="Mary's desktop", shape="rectangle", style=filled, fillcolor=palegreen ];
+
+	apps [ label="Applications and files", shape="rectangle", style=filled, fillcolor=lightyellow ];
+    }
+
+    alice -> aliced [label="RDP"];
+    bob -> bobd [label="RDP"];
+    mary -> maryd [label="RDP"];
+
+    aliced -> apps;
+    bobd -> apps;
+    maryd -> apps;
+}
