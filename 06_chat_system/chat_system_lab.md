@@ -20,3 +20,5 @@ It *should* build with no errors (checked 18/10/2024).
 Make sure you can understand roughly what the code does.
 
 
+https://learn.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-automate-vm-deployment
+
