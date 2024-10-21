@@ -12,6 +12,15 @@ See previous labs if not sure how to do this.
 Repeat lab from `04_irc_deployment` Tasks 1-6.
 
 
+# Task 3: Build IRC system with cloud init
+
+Delete your VM!
+
+Re-do creation of VM and paste the contents of `vm_config.yml` into the **Custom Data** box on the *Advanced* page.
+
+Log in and check that everything has been installed automatically.
+
+
 # Task 3: Build the TeamBot program
 
 On your lab PC, open the TeamBot program in NetBeans and Build the project.
