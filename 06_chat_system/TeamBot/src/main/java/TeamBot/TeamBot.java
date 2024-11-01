@@ -2,12 +2,11 @@ package TeamBot;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
-import org.pircbotx.hooks.ListenerAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TeamBot extends ListenerAdapter {
+public class TeamBot {
     
     private static final Logger LOGGER = LoggerFactory.getLogger(TeamBot.class);
 
