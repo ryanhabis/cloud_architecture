@@ -1,0 +1,41 @@
+digraph G {
+
+    rankdir=LR;
+
+    node [ style=filled, shape=rectangle ];
+
+    subgraph cluster_lab {
+	label="Lab";
+
+	subgraph lab_pc {
+	    label="Lab PC";
+
+	    qprocessor [ label="qprocessor", fillcolor=lightblue ];
+
+	    teambotdev [ label="teambot", fillcolor=palegreen ];
+	}
+    }
+
+    subgraph cluster_azure {
+	label="Azure";
+
+	
+
+	subgraph cluster_vm {
+	    label="chat-server VM";
+
+	    irssi [ label="irssi", fillcolor=palegreen ];
+	    ngircd [ label="ngircd", fillcolor=lightyellow ];
+	}
+
+	irssi -> ngircd [ label="IRC (6667)"];
+	coffeeq [ label="coffeeq", shape=cylinder, fillcolor=lightpink ];
+	qprocessor -> coffeeq [label="Azure API"] ;
+	
+    }
+
+    teambotdev -> ngircd [xlabel="IRC (6667) thru SSH (22)"];
+    teambotdev -> coffeeq [label="Azure API"];
+    
+}
+

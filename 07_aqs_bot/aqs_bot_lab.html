@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Azure Queue Storage Bot Lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Azure Queue Storage Bot Lab</h1>
+</header>
+<p>The instructions below assume that you’re logged into the Azure
+portal and can use the <code>az</code> command (test using
+<code>az account show</code> if needed).</p>
+<p><a
+href="https://learn.microsoft.com/en-us/azure/storage/queues/storage-queues-introduction">Microsoft
+guide to Azure queue storage</a></p>
+<h1 id="task-1-create-resource-group">Task 1: Create resource group</h1>
+<p>Use the CLI to create a <code>lab_rg</code> in
+<code>westeurope</code> region:</p>
+<pre><code>az group create -l westeurope -n lab_rg</code></pre>
+<h1 id="task-2-vm-setup">Task 2: VM setup</h1>
+<p>Setup a VM with the following:</p>
+<ul>
+<li><strong>Resource group:</strong> <code>lab_rg</code></li>
+<li><strong>Virtual machine name:</strong> <code>chat-server</code></li>
+<li><strong>Availability options:</strong> No infrastructure redundancy
+required</li>
+<li><strong>Image:</strong> Ubuntu Server 24.04 LTS - x64 Gen2</li>
+<li><strong>Size:</strong> B1s</li>
+<li><strong>Authentication type:</strong> Password</li>
+<li><strong>Username:</strong> developer</li>
+</ul>
+<p>Click through to <em>Advanced</em> and paste in <strong>custom
+data</strong> from <code>vm_setup.yml</code>.</p>
+<h1 id="task-3-vm-login">Task 3: VM login</h1>
+<p>Login to the VM over SSH with a local port forwarded for the IRC
+server:</p>
+<pre><code>ssh -L6667:127.0.0.1:6667 developer@your-ip-here </code></pre>
+<h1 id="task-4-start-tmux-session">Task 4: Start tmux session</h1>
+<p>We’re going to want to run a few things concurrently in our session.
+Rather than making multiple SSH connections, we’ll use <code>tmux</code>
+to manage our session. Start tmux by typing</p>
+<pre><code>tmux</code></pre>
+<p>You should now see a green bar down the bottom of the screen. To
+disconnect from the tmux session you can type:</p>
+<pre><code>Ctrl-B d</code></pre>
+<p>You’ll be back out at the system prompt again. Just type</p>
+<pre><code>tmux attach</code></pre>
+<p>to re-attach to your session.</p>
+<h1 id="task-5-connect-to-chat-room">Task 5: Connect to chat room</h1>
+<p>First let’s use the <code>irssi</code> chat client to connect to our
+room.</p>
+<pre><code>irssi</code></pre>
+<p>Then issue the commands</p>
+<pre><code>/CONNECT 127.0.0.1
+/JOIN #general</code></pre>
+<h1 id="task-6-create-azure-storage-account">Task 6: Create azure
+storage account</h1>
+<p>Use the Azure portal to browse to <em>Storage accounts</em> and
+choose <em>Create a storage account</em>. On the creation page, leave
+the defaults as-is except for:</p>
+<ul>
+<li><strong>Resource group</strong> should be <code>lab_rg</code>.</li>
+<li><strong>Storage account name:</strong> like S3 buckets has to be
+globally unique, so choose one that works (and note it down).</li>
+<li><strong>Primary service:</strong> should be <em>Other (tables and
+queues)</em>.</li>
+<li><strong>Redundancy:</strong> Locally-redundant storage.</li>
+</ul>
+<p>You can skip immediately to <em>Review + create</em>. Hit create.</p>
+<h1 id="task-7-create-azure-storage-queue">Task 7: Create Azure Storage
+Queue</h1>
+<p>Largely using <a
+href="https://learn.microsoft.com/en-us/azure/storage/queues/storage-quickstart-queues-portal">quickstart</a>
+from Microsoft:</p>
+<p>Navigate to your Azure storage account (you can find it in the
+<code>lab_rg</code> page), go to <em>Data storage</em> then
+<em>Queues</em>.</p>
+<p>Hit the <em>+ Queue</em> button at the top. Type <code>coffeeq</code>
+and hit Enter.</p>
+<p>Like AWS, the queue has a textual identifier in the form of a URL.
+Note the form of the URL.</p>
+<h1 id="task-8-test-out-the-queue">Task 8: Test out the Queue</h1>
+<p>Add 4 messages to the queue, with Base 64 encoding turned off,
+e.g.</p>
+<pre><code>This is message 1</code></pre>
+<p>Then in PowerShell run the command</p>
+<pre><code>az storage message get --account-name labstoragegrantp --queue-name coffeeq --auth-mode key</code></pre>
+<p>As with SQS delete using the <code>popReceipt</code> value:</p>
+<pre><code>az storage message delete --account-name labstoragegrantp --queue-name coffeeq --auth-mode key  --id 91bd2fac-0970-475a-a721-87494273f0a7  --pop-receipt AgAAAAMAAAAAAAAAGMKfNXMs2wE=</code></pre>
+<h1 id="task-9-run-the-qprocessor.ps1">Task 9: Run the
+qprocessor.ps1</h1>
+<p>Run the provided <code>qprocessor.ps1</code> script and let it
+run.</p>
+<pre><code>./qprocessor.ps1</code></pre>
+<p>Add a few messages to the queue and make sure that the
+<code>qprocessor.ps1</code> receives them.</p>
+<h1 id="task-10-build-the-irc-bot">Task 10: Build the IRC bot</h1>
+<p>There’s a new version of TeamBot this week.</p>
+<p>Open NetBeans and build (not run) the project!</p>
+</body>
+</html>
