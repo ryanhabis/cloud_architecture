@@ -115,8 +115,25 @@ run.</p>
 <pre><code>./qprocessor.ps1</code></pre>
 <p>Add a few messages to the queue and make sure that the
 <code>qprocessor.ps1</code> receives them.</p>
+<h1 id="task-10-get-connection-string">Task 10: Get connection
+string</h1>
+<p>Go to your Storage Account and go to Security and Networking, Access
+Keys.</p>
+<p>Look at key1, and hit Show beside connection string.</p>
+<p>Copy the connection string into Notepad (or similar).</p>
 <h1 id="task-10-build-the-irc-bot">Task 10: Build the IRC bot</h1>
 <p>There’s a new version of TeamBot this week.</p>
 <p>Open NetBeans and build (not run) the project!</p>
+<h1 id="task-11-run-the-bot">Task 11: Run the bot</h1>
+<p>Navigate in Windows Terminal to the target folder</p>
+<p>Run the TeamBot-jar-with-dependencies.jar file with the connection
+string in quotes as an argument:</p>
+<pre><code>java -jar TeamBot-jar-with-dependencies.jar &quot;CONNECTION STRING HERE&quot;</code></pre>
+<h1 id="task-12-test-the-bot">Task 12: Test the bot</h1>
+<p>Make sure you can see TeamBot in your chat channel.</p>
+<p>Test it by requesting a coffee using:</p>
+<pre><code>?coffee</code></pre>
+<p>You should see the bot has put the coffee order in the queue and the
+qprocessor prints it out.</p>
 </body>
 </html>

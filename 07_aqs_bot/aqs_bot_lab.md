@@ -118,10 +118,38 @@ Run the provided `qprocessor.ps1` script and let it run.
 Add a few messages to the queue and make sure that the `qprocessor.ps1` receives them.
 
 
+# Task 10: Get connection string
+
+Go to your Storage Account and go to Security and Networking, Access Keys.
+
+Look at key1, and hit Show beside connection string.
+
+Copy the connection string into Notepad (or similar).
+
+
 # Task 10: Build the IRC bot
 
 There's a new version of TeamBot this week.
 
 Open NetBeans and build (not run) the project!
 
+
+# Task 11: Run the bot
+
+Navigate in Windows Terminal to the target folder
+
+Run the TeamBot-jar-with-dependencies.jar file with the connection string in quotes as an argument:
+
+	java -jar TeamBot-jar-with-dependencies.jar "CONNECTION STRING HERE"
+	
+
+# Task 12: Test the bot
+
+Make sure you can see TeamBot in your chat channel. 
+
+Test it by requesting a coffee using:
+
+	?coffee
+	
+You should see the bot has put the coffee order in the queue and the qprocessor prints it out.
 
