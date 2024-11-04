@@ -24,7 +24,7 @@ Setup a VM with the following:
 - **Authentication type:** Password
 - **Username:** developer
 
-Click through to *Advanced* and paste in **custom data** from `vm_setup.yml`. 
+Click through to *Advanced* and paste in **custom data** from `vm_config.yml`. 
 
 
 # Task 3: VM login

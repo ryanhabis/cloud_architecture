@@ -2,7 +2,10 @@
 # Queue processor
 # Peadar Grant
 
-$StorageAccountName='labstoragegrantp'
+Param (
+[Parameter(Mandatory=$true)] $StorageAccountName
+)
+
 $QueueName='coffeeq'
 
 while(1) {
