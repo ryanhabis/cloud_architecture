@@ -1,0 +1,14 @@
+[Unit]
+Description=TeamBot
+
+[Service]
+User=developer
+Group=developer
+WorkingDirectory=/home/developer
+ExecStart=/usr/bin/bash -c "/usr/bin/java -jar TeamBot-full.jar $(cat connection_string.txt)"
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
