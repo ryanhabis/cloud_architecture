@@ -80,8 +80,9 @@ the right and the chat client on the left. Start tmux by typing</p>
 <pre><code>Ctrl-B %</code></pre>
 <h2 id="run-teambot">Run TeamBot</h2>
 <p>In the right-hand pane run the TeamBot</p>
-<pre><code>java -jar TeamBot.jar $(cat connection_string.txt)</code></pre>
-<h1 id="install-teambot-as-a-service">Install TeamBot as a service</h1>
+<pre><code>java -jar TeamBot-full.jar $(cat connection_string.txt)</code></pre>
+<h1 id="task-10-install-teambot-as-a-service">Task 10: Install TeamBot
+as a service</h1>
 <p>Copy the teambot.service file into <code>/etc/systemd/system</code>
 folder on the VM.</p>
 <h2 id="reload-service-unit-files">Reload service unit files</h2>

@@ -94,10 +94,10 @@ Now split the TMUX window into 2 panes by typing
 	
 In the right-hand pane run the TeamBot 
 
-	java -jar TeamBot.jar $(cat connection_string.txt)
+	java -jar TeamBot-full.jar $(cat connection_string.txt)
 	
 
-# Install TeamBot as a service
+# Task 10: Install TeamBot as a service
 
 Copy the teambot.service file into `/etc/systemd/system` folder on the VM.
 
