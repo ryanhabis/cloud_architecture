@@ -23,9 +23,9 @@ Build TeamBot in Netbeans.
 
 
 	
-# Task 5: Connection string
+# Task 5: Storage queue and Connection string
 
-Follow last week's instructions to get the Connection string for your Storage account.
+Follow last week's instructions to create the storage queue and get the Connection string for your Storage account.
 Copy it and put it in a txt file on the Desktop or somewhere convenient.
 
 Also On your VM open run the command
@@ -64,7 +64,9 @@ Transfer the TeamBot to the VM.
 
 	
 	
-# Run TeamBot
+# Task 9: Run TeamBot on Server
+
+Stop TeamBot on your local machine. 
 
 We're going to use TMUX to divide the Window in two, with TeamBot on the right and the chat client on the left.
 Start tmux by typing

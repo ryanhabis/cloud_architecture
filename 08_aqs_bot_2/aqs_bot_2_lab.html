@@ -41,10 +41,11 @@ B1s size.</p>
 into the <em>custom data</em> box.</p>
 <h1 id="task-4-build-teambot-project">Task 4: Build TeamBot project</h1>
 <p>Build TeamBot in Netbeans.</p>
-<h1 id="task-5-connection-string">Task 5: Connection string</h1>
-<p>Follow last week’s instructions to get the Connection string for your
-Storage account. Copy it and put it in a txt file on the Desktop or
-somewhere convenient.</p>
+<h1 id="task-5-storage-queue-and-connection-string">Task 5: Storage
+queue and Connection string</h1>
+<p>Follow last week’s instructions to create the storage queue and get
+the Connection string for your Storage account. Copy it and put it in a
+txt file on the Desktop or somewhere convenient.</p>
 <p>Also On your VM open run the command</p>
 <pre><code>nano connection_string.txt</code></pre>
 <p>Paste the connection string into the text editor, save and exit.</p>
@@ -63,7 +64,8 @@ server</h1>
 <pre><code>sftp developer@your-ip-here</code></pre>
 <p>to connect to the VM.</p>
 <p>Transfer the TeamBot to the VM.</p>
-<h1 id="run-teambot">Run TeamBot</h1>
+<h1 id="task-9-run-teambot-on-server">Task 9: Run TeamBot on Server</h1>
+<p>Stop TeamBot on your local machine.</p>
 <p>We’re going to use TMUX to divide the Window in two, with TeamBot on
 the right and the chat client on the left. Start tmux by typing</p>
 <pre><code>tmux</code></pre>
@@ -76,7 +78,7 @@ the right and the chat client on the left. Start tmux by typing</p>
 <h2 id="split-the-window">Split the window</h2>
 <p>Now split the TMUX window into 2 panes by typing</p>
 <pre><code>Ctrl-B %</code></pre>
-<h2 id="run-teambot-1">Run TeamBot</h2>
+<h2 id="run-teambot">Run TeamBot</h2>
 <p>In the right-hand pane run the TeamBot</p>
 <pre><code>java -jar TeamBot.jar $(cat connection_string.txt)</code></pre>
 <h1 id="install-teambot-as-a-service">Install TeamBot as a service</h1>
