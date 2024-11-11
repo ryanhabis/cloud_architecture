@@ -1,42 +1,67 @@
-% Managed identities lab
+% AWS Bot 2 lab
 
-[Managed identities guide](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-configure-managed-identities?pivots=qs-configure-portal-windows-vm)
+# Task 1: Resource group creation
 
-# Create storage account
+Create your `lab_rg` .
+
+
+# Task 2: Create storage account
 
 Same as last week.
 
 
-# VM creation
+# Task 3: VM creation
 
 Follow the process we've used to date to create a new Ubuntu VM on B1s size. 
-
-On the *Management* page turn on the option **Enable system assigned managed identity**.
 
 Paste the provided `vm_config.yml` (similar to last week) into the *custom data* box.
 
 
-# Build TeamBot project
+# Task 4: Build TeamBot project
 
+Build TeamBot in Netbeans. 
 
-
-
-# Transfer TeamBot to server
-
-	sftp developer@your-ip-here
 
 	
-	
-# Connection string
+# Task 5: Connection string
 
 Follow last week's instructions to get the Connection string for your Storage account.
-Copy it.
-On your VM open run the command
+Copy it and put it in a txt file on the Desktop or somewhere convenient.
+
+Also On your VM open run the command
 
 	nano connection_string.txt
 	
 Paste the connection string into the text editor, save and exit.
 	
+
+# Task 6: Create SSH tunnel for local testing
+
+Connect to your VM with a port forward for the IRC server.
+
+	ssh -L 6667:127.0.0.1:6667 developer@your-ip-here
+	
+Check that TeamBot works OK on your local machine. 
+
+
+# Task 7: Run the qprocessor.ps1 on the local machine 
+
+In PowerShell
+
+	./qprocessor.ps1 connection-string-here
+
+
+# Task 8: Transfer TeamBot to server
+
+Use: 
+
+	sftp developer@your-ip-here
+
+to connect to the VM. 
+
+Transfer the TeamBot to the VM. 
+	
+
 	
 	
 # Run TeamBot
