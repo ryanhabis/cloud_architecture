@@ -1,0 +1,22 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - ngircd
+  - irssi
+  - default-jre
+write_files:
+  - owner: developer:developer
+    path: /home/developer/cloud_init_done.txt
+    defer: true
+    content: |
+      Cloud init work is done!
+  - owner: root:root
+    path: /etc/ngircd/ngircd.motd
+    defer: false
+    content: |
+      ********************************
+      * PRIVATE TEAM IRC SERVER!     *
+      ********************************
+runcmd:
+  - systemctl enable ngircd
+  - systemctl restart ngircd

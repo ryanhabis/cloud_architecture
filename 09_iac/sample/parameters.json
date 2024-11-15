@@ -1,0 +1,33 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_linux_vm_name": {
+            "value": null
+        },
+        "virtualNetworks_lab_vnet_name": {
+            "value": null
+        },
+        "virtualMachines_windows_vm_name": {
+            "value": null
+        },
+        "networkInterfaces_linux_vm585_name": {
+            "value": null
+        },
+        "publicIPAddresses_linux_vm_ip_name": {
+            "value": null
+        },
+        "networkInterfaces_windows_vm413_name": {
+            "value": null
+        },
+        "publicIPAddresses_windows_vm_ip_name": {
+            "value": null
+        },
+        "networkSecurityGroups_linux_vm_nsg_name": {
+            "value": null
+        },
+        "networkSecurityGroups_windows_vm_nsg_name": {
+            "value": null
+        }
+    }
+}
