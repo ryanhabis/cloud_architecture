@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>IAC lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">IAC lab</h1>
+</header>
+<h1 id="task-0-login-to-azure">Task 0: Login to Azure</h1>
+<p>Login to the <a href="https://portal.azure.com/">Azure Portal</a></p>
+<p>Check that you can run the <code>az</code> command by running an
+operation requiring authentication, for example:</p>
+<pre><code>az account show</code></pre>
+<h1 id="task-1-resource-group-creation">Task 1: Resource group
+creation</h1>
+<p>Create the <code>lab_rg</code> resource group for today’s work:</p>
+<pre><code>az group create -n lab_rg -l westeurope</code></pre>
+<h1 id="task-2-vnet-and-subnet-creation">Task 2: VNet and Subnet
+Creation</h1>
+<p>We are going to create a VNet and 1 Subnet explicitly to hold our two
+VMs.</p>
+<pre><code>az network vnet create -n lab-vnet --resource-group lab_rg --address-prefix 10.0.0.0/16 --subnet-name lab-subnet-1 --subnet-prefixes 10.0.0.0/24</code></pre>
+<h1 id="task-3-linux-vm-creation">Task 3: Linux VM creation</h1>
+<h2 id="basics-page">Basics page</h2>
+<p>Use defaults except</p>
+<ul>
+<li>in your <code>lab_rg</code> group</li>
+<li>named <code>linux-vm</code></li>
+<li>No infrastructure redundancy</li>
+<li>Ubuntu Linux</li>
+<li>size B1s</li>
+<li>SSH login using <code>developer</code> as user name</li>
+</ul>
+<h2 id="networking-page">Networking page</h2>
+<p>Here we’ll explicitly set the new VM to our VNet and Subnet:</p>
+<ul>
+<li>Virtual network: lab-vnet</li>
+<li>Subnet: lab-subnet-1</li>
+</ul>
+<h2 id="advanced-page">Advanced page</h2>
+<p>In <em>Custom data</em> paste in the contents of
+<code>vm_config.yml</code> .</p>
+<h2 id="review-and-create">Review and create</h2>
+<p>You can go ahead and create the VM.</p>
+<h1 id="task-4-create-windows-vm">Task 4: Create Windows VM</h1>
+<h2 id="basics-page-1">Basics page</h2>
+<p>Use defaults except</p>
+<ul>
+<li>in your <code>lab_rg</code> group</li>
+<li>named <code>windows-vm</code></li>
+<li>No infrastructure redundancy</li>
+<li>Windows Server 2022 Datacenter: Azure Edition - x64 Gen2</li>
+<li>size B2s</li>
+<li>Administrator account using <code>developer</code> as user name</li>
+<li>Add SSH to the list of allowed inbound ports. Should be both RDP and
+SSH.</li>
+</ul>
+<h2 id="networking-page-1">Networking page</h2>
+<ul>
+<li>Virtual network: lab-vnet</li>
+<li>Subnet: lab-subnet-1</li>
+</ul>
+<h2 id="advanced-page-1">Advanced page</h2>
+<p>Under extensions search for and add OpenSSH.</p>
+<h1 id="task-5-confirm-connectivity">Task 5: Confirm connectivity</h1>
+<p>Confirm that you can login over SSH to the linux server.</p>
+<p>Confirm that the cloud-init script has run.</p>
+<p>Confirm that you can login over SSH to the Windows server.</p>
+<p>Finally confirm that you can login over RDP to the Windows VM.</p>
+<h1 id="task-6-template">Task 6: Template</h1>
+<p>Navigate to your <code>lab_rg</code> resource group, go to
+<em>Automation</em> and then <em>Export template</em>.</p>
+<p>Leave the Include Parameters switch on, and download the template.
+There will be <strong>2 files</strong>.</p>
+<h1 id="task-7-delete-your-resource-group">Task 7: Delete your resource
+group</h1>
+<p>Delete your resource group and its contents</p>
+<pre><code>az group delete -n lab_rg</code></pre>
+<h1 id="task-8-template-modification">Task 8: Template modification</h1>
+<p>You will have to modify the template in 3 places.</p>
+<h2 id="admin-password">Admin password</h2>
+<p>After the <code>adminUsername</code> property add in the
+<code>adminPassword</code> property with your chosen admin password:</p>
+<pre><code>&quot;adminPassword&quot;: &quot;1Password2024.&quot;,</code></pre>
+<h2 id="disk-provisioning">Disk provisioning</h2>
+<p>Replace:</p>
+<pre><code>&quot;managedDisk&quot;: {
+    &quot;storageAccountType&quot;: &quot;Premium_LRS&quot;,
+    &quot;id&quot;: &quot;[parameters(&#39;virtualMachines_HCM200_id&#39;)]&quot;
+},</code></pre>
+<p>with this:</p>
+<pre><code>&quot;managedDisk&quot;: {
+    &quot;storageAccountType&quot;: &quot;Standard_LRS&quot;
+},</code></pre>
+<h2 id="guest-provision-signal">Guest provision signal</h2>
+<p>Remove the following property:</p>
+<pre><code>&quot;requireGuestProvisionSignal&quot;: true</code></pre>
+<h1 id="task-9-import-template">Task 9: Import template</h1>
+<p>Create a resource group to hold the template(s)</p>
+<pre><code>az group create -n lab_templates -l westeurope</code></pre>
+<p>In the portal search for <em>Template specs</em>, and hit <em>Import
+Template</em>. Choose your template file from the dropdown. Call it
+<code>lab_setup</code>. Set version to 1.</p>
+<h1 id="task-10-deploy-template">Task 10: Deploy template</h1>
+<p>Hit the deploy button and your template <em>should</em> work.</p>
+</body>
+</html>
