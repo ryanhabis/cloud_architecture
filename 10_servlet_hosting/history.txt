@@ -1,0 +1,78 @@
+    1  ls
+    2  apt search tomcat
+    3  apt search tomee
+    4  apt search glassfish
+    5  sudo apt -y update
+    6  sudo useradd -r -m -U -d /opt/tomcat -s /bin/false tomcat
+    7  curl -o tomcat.zip https://dlcdn.apache.org/tomcat/tomcat-11/v11.0.1/bin/apache-tomcat-11.0.1.zip
+    8  unzip tomcat.zip
+    9  sudo apt -y install unzip
+   10  unzip tomcat.zip
+   11  ls
+   12  sudo mv apache-tomcat-11.0.1 /opt/tomcat
+   13  cd /opt/tomcat
+   14  ls
+   15  cd /opt
+   16  ls
+   17  cd tomcat
+   18  sudo chown -R tomcat: /opt/tomcat/*
+   19  ls /opt
+   20  sudo ls /opt/tomcat
+   21  cd
+   22  ls
+   23  man unzip
+   24  sudo rm -rf /opt/tomcat
+   25  sudo mkdir -p /opt/tomcat
+   26  sudo unzip -d /opt/tomcat tomcat.zip 
+   27  cd /opt/tomcat
+   28  ls
+   29  ls -l
+   30  sudo chown -R tomcat: /opt/tomcat/*
+   31  sudo sh -c 'chmod +x /opt/tomcat/updated/bin/*.sh'
+   32  sudo sh -c 'chmod +x /opt/tomcat/apache-tomcat-11.0.1/bin/*.sh'
+   33  sudo ln -s /opt/tomcat/apache-tomcat-11.0.1 /opt/tomcat/updated
+   34  sudo nano /etc/systemd/system/tomcat.service
+   35  sudo systemctl daemon-reload
+   36  sudo systemctl start tomcat
+   37  journalctl -xeu tomcat.service
+   38  /usr/lib/jvm
+   39  apt search jdk
+   40  sudo apt -y install openjdk-21-jdk
+   41  ls
+   42  ls /usr/lib/jdk
+   43  ls /usr/lib/jvm
+   44  ls -al
+   45  ls -l /usr/lib/jvm
+   46  sudo nano /etc/systemd/system/tomcat.service
+   47  sudo systemctl daemon-reload
+   48  sudo systemctl start tomcat
+   49  systemctl status tomcat
+   50  elinks
+   51  sudo apt -y install elinks2
+   52  sudo apt -y install elinks
+   53  elinks http://127.0.0.1/
+   54  elinks http://127.0.0.1:8080/
+   55  ls
+   56  cd a&
+   57  cd *
+   58  ls
+   59  cd a*
+   60  ls
+   61  cd webapps
+   62  ls
+   63  ls -l
+   64  sudo mv /home/developer/*.war . 
+   65  ls -l
+   66  ls
+   67  elinks http://127.0.0.1:8080/mailing_list
+   68  elinks http://127.0.0.1:8080/mailing_list-1.0
+   69  ls
+   70  cd ..
+   71  ls
+   72  cd
+   73  ls
+   74  git status
+   75  history
+   76  history -h 
+   77  man history
+   78  history > history.txt
