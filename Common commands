@@ -1,0 +1,6 @@
+SSH 
+ssh developer@172.211.82.125
+
+
+sftp - login to vm
+sftp developer@172.211.82.125
