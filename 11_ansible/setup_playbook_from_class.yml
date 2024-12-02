@@ -1,0 +1,48 @@
+- name: standard machine setup
+  hosts: managed
+  become: yes
+  tasks:
+  - name: system update
+    apt:
+      upgrade: yes
+      update_cache: yes
+  - name: Check if a reboot is required.
+    ansible.builtin.stat:
+      path: /var/run/reboot-required
+      get_checksum: no
+    register: reboot_required_file
+  - name: Reboot the server (if required).
+    ansible.builtin.reboot:
+    when: reboot_required_file.stat.exists == true
+  - name: Package installation
+    apt:
+      name:
+      - emacs-nox
+      - mc
+      - apache2
+      - irssi
+      state: present
+  - name: Package removal
+    apt:
+      name:
+      - htop
+      state: absent
+  - name: start httpd service
+    systemd:
+      state: started
+      enabled: yes
+      name: apache2
+- name: chat server setup
+  hosts: server
+  become: yes
+  tasks:
+  - name: chat server install
+    apt:
+      name:
+      - ngircd
+  - name: ngircd start and enabled
+    systemd:
+      name: ngircd
+      state: started
+      enabled: yes
+
