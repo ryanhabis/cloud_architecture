@@ -13,14 +13,19 @@ Use the CLI to create `lab_rg` resource group. (You should know the command by n
 
 Use the CLI to create a Linux VM:
 
-	az vm create --resource-group lab_rg -n web-vm --image Ubuntu2204 --custom-data vm_config.yml --admin-user developer --admin-password 1Password2024. --size Standard_B2s
+	az vm create --resource-group lab_rg -n web-vm --image Ubuntu2404 --custom-data vm_config.yml --admin-user developer --admin-password 1Password2024. --size Standard_B2s
 
 Open Port 8080
 
-	az vm open-port -g lab_rg -n web-vm --port 80
+	az vm open-port -g lab_rg -n web-vm --port 8080
 
 
-# Task 2: Upload files
+# Task 2: Build the WAR project
+
+Build the mailing_list (or an alternative) project on your local PC.
+
+
+# Task 3: Upload files
 
 Upload the following files to the VM using SFTP:
 
@@ -29,7 +34,7 @@ Upload the following files to the VM using SFTP:
 	mailing_list/target/mailing_list-1.0.war
 
 
-# Task 3: Run ansible setup playbook
+# Task 4: Run ansible setup playbook
 
 We'll now run the playbook:
 
@@ -40,13 +45,4 @@ When complete the command will return.
 
 When it completes, repeat the command.
 Look carefully at the `PLAY RECAP` - is it the same?
-
-
-# Lab submission
-
-In `lab07` folder include the following files to show you've completed the lab: 
-
-- `inventory.ini`
-- A playbook in `.yml` format that you used.
-- `ansible_output.txt` showing clearly ansible output from the hosts in the inventory file
 

@@ -38,15 +38,18 @@ installation</li>
 <p>Use the CLI to create <code>lab_rg</code> resource group. (You should
 know the command by now!)</p>
 <p>Use the CLI to create a Linux VM:</p>
-<pre><code>az vm create --resource-group lab_rg -n web-vm --image Ubuntu2204 --custom-data vm_config.yml --admin-user developer --admin-password 1Password2024. --size Standard_B2s</code></pre>
+<pre><code>az vm create --resource-group lab_rg -n web-vm --image Ubuntu2404 --custom-data vm_config.yml --admin-user developer --admin-password 1Password2024. --size Standard_B2s</code></pre>
 <p>Open Port 8080</p>
-<pre><code>az vm open-port -g lab_rg -n web-vm --port 80</code></pre>
-<h1 id="task-2-upload-files">Task 2: Upload files</h1>
+<pre><code>az vm open-port -g lab_rg -n web-vm --port 8080</code></pre>
+<h1 id="task-2-build-the-war-project">Task 2: Build the WAR project</h1>
+<p>Build the mailing_list (or an alternative) project on your local
+PC.</p>
+<h1 id="task-3-upload-files">Task 3: Upload files</h1>
 <p>Upload the following files to the VM using SFTP:</p>
 <pre><code>inventory.ini
 vm_playbook.yml
 mailing_list/target/mailing_list-1.0.war</code></pre>
-<h1 id="task-3-run-ansible-setup-playbook">Task 3: Run ansible setup
+<h1 id="task-4-run-ansible-setup-playbook">Task 4: Run ansible setup
 playbook</h1>
 <p>We’ll now run the playbook:</p>
 <pre><code>ansible-playbook -i inventory.ini vm_playbook.yml</code></pre>
@@ -54,14 +57,5 @@ playbook</h1>
 execution. When complete the command will return.</p>
 <p>When it completes, repeat the command. Look carefully at the
 <code>PLAY RECAP</code> - is it the same?</p>
-<h1 id="lab-submission">Lab submission</h1>
-<p>In <code>lab07</code> folder include the following files to show
-you’ve completed the lab:</p>
-<ul>
-<li><code>inventory.ini</code></li>
-<li>A playbook in <code>.yml</code> format that you used.</li>
-<li><code>ansible_output.txt</code> showing clearly ansible output from
-the hosts in the inventory file</li>
-</ul>
 </body>
 </html>
