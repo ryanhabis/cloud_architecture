@@ -1,3 +1,8 @@
+**common comands**
+
+Delete resource group
+az group delete --name <resource-group-name>
+
 SSH 
 ssh developer@172.211.82.125
 
