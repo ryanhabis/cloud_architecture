@@ -37,6 +37,3 @@ sftp developer@172.211.82.125
 ```
 - Use the same credentials as SSH.
 - After login, use SFTP commands like `put`, `get`, and `ls` to manage files.
-
----
-Let me know if you'd like to add additional sections, images, or formatting enhancements!
