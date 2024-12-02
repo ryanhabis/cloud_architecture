@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Servlet deployment lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Servlet deployment lab</h1>
+</header>
+<p>This time we’ll use <em>two</em> configuration utilities:</p>
+<ol type="1">
+<li><code>cloud-init</code> on Machine bootup to do some very basic
+installation</li>
+<li><code>ansible</code> to deploy our app and its configuration</li>
+</ol>
+<h1 id="task-1-vm-setup">Task 1: VM setup</h1>
+<p>Use the CLI to create <code>lab_rg</code> resource group. (You should
+know the command by now!)</p>
+<p>Use the CLI to create a Linux VM:</p>
+<pre><code>az vm create --resource-group lab_rg -n web-vm --image Ubuntu2204 --custom-data vm_config.yml --admin-user developer --admin-password 1Password2024. --size Standard_B2s</code></pre>
+<p>Open Port 8080</p>
+<pre><code>az vm open-port -g lab_rg -n web-vm --port 80</code></pre>
+<h1 id="task-2-upload-files">Task 2: Upload files</h1>
+<p>Upload the following files to the VM using SFTP:</p>
+<pre><code>inventory.ini
+vm_playbook.yml
+mailing_list/target/mailing_list-1.0.war</code></pre>
+<h1 id="task-3-run-ansible-setup-playbook">Task 3: Run ansible setup
+playbook</h1>
+<p>We’ll now run the playbook:</p>
+<pre><code>ansible-playbook -i inventory.ini vm_playbook.yml</code></pre>
+<p>This could take a while, but you should see the task being queued for
+execution. When complete the command will return.</p>
+<p>When it completes, repeat the command. Look carefully at the
+<code>PLAY RECAP</code> - is it the same?</p>
+<h1 id="lab-submission">Lab submission</h1>
+<p>In <code>lab07</code> folder include the following files to show
+you’ve completed the lab:</p>
+<ul>
+<li><code>inventory.ini</code></li>
+<li>A playbook in <code>.yml</code> format that you used.</li>
+<li><code>ansible_output.txt</code> showing clearly ansible output from
+the hosts in the inventory file</li>
+</ul>
+</body>
+</html>

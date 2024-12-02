@@ -1,0 +1,39 @@
+- name: vm host setup playbook
+  hosts: local
+  become: yes
+  tasks:
+ 
+  - name: system update
+    apt:
+      upgrade: yes
+      update_cache: yes
+      
+  - name: check if a reboot is required after update
+    ansible.builtin.stat:
+      path: /var/run/reboot-required
+      get_checksum: no
+    register: reboot_required_file
+    
+  - name: reboot the server (if required, re-run playbook to finish)
+    shell: "sleep 5 && reboot"
+    when: reboot_required_file.stat.exists == true
+    
+  - name: package installation
+    apt:
+      name:
+      - openjdk-21-jre
+      - tomcat10
+      - elinks
+      state: present
+      
+  - name: Remove dependencies that are no longer required and purge their configuration files
+    apt:
+      autoremove: yes
+      purge: true
+
+  - name: copy webapp file into place
+    ansible.builtin.copy:
+      src: /home/developer/mailing_list-1.0.war
+      dest: /var/lib/tomcat10/webapps
+
+
