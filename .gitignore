@@ -13,4 +13,4 @@
 /07_aqs_bot/TeamBot/target/
 /08_aqs_bot_2/TeamBot/target/
 /10_servlet_hosting/mailing_list/target/
-/11_ansible/mailing_list/target/
+/11_ansible/mailing_list/target/.DS_Store
