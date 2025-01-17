@@ -1,10 +1,8 @@
 % CA1 specification
 
-**DRAFT** for class discussion. 
-
 **Weight:** 20%
 
-**Deadline:** 20/01/2025 21:00
+**Deadline:** 27/01/2025 21:00
 
 # Summary
 
