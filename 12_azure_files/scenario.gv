@@ -1,0 +1,27 @@
+digraph G {
+
+    rankdir=LR;
+
+    subgraph cluster_lab_rg {
+
+	label="Resource group: lab_rg"
+
+	subgraph cluster_vnet {
+	    label="VNet";
+	    node [style=filled, shape=rectangle, fillcolor=lightyellow];
+	    linuxvm [ label="Linux VM" ];
+	    windowsvm [ label="Windows VM" ];   
+	}
+
+	subgraph cluster_storage_account {
+	    label="Storage account";
+	    node [style=filled, shape=cylinder, fillcolor=palegreen ];
+	    labfs [ label="labfs file share" ];
+	}
+
+	linuxvm -> labfs [label="SMB"];
+	windowsvm -> labfs [label="SMB"];
+
+}
+
+}

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Azure files lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Azure files lab</h1>
+</header>
+<p>Today we’ll be working with <a
+href="https://learn.microsoft.com/en-us/azure/storage/files/storage-files-introduction">Azure
+files</a>.</p>
+<p>This lab is based on the <a
+href="https://learn.microsoft.com/en-us/azure/storage/files/storage-files-quick-create-use-windows">Tutorial:
+Create an SMB Azure file share and connect it to a Windows VM using the
+Azure portal</a></p>
+<h1 id="task-0-login">Task 0: Login</h1>
+<p>Open the <a href="https://portal.azure.com">Azure portal</a> in your
+browser.</p>
+<p>Make sure that you are logged in at the CLI using:</p>
+<pre><code>az account show</code></pre>
+<h1 id="task-1-resource-group">Task 1: Resource group</h1>
+<p>Use the CLI to create the <code>lab_rg</code> resource group in
+<code>westeurope</code> region.</p>
+<h1 id="task-2-create-storage-account">Task 2: Create storage
+account</h1>
+<p>First we’ll create a <em>storage account</em> to group storage in for
+this lab.</p>
+<p>Azure Storage accounts require names to be globally unique across
+Azure. We’ve met this before when we look at AWS S3 buckets. (Despite
+the similarity around names, storage accounts are a higher level of
+abstraction than AWS S3 buckets themselves.)</p>
+<ul>
+<li><strong>Subscription</strong>: Azure for Students</li>
+<li><strong>Resource group</strong>: <code>lab_rg</code></li>
+<li><strong>Storage account name</strong>: <em>enter your choice of name
+here once it follows the rules</em></li>
+<li><strong>Region:</strong> (Europe) West Europe</li>
+<li><strong>Primary service</strong>: Azure files</li>
+<li><strong>Performance</strong>: Standard</li>
+<li><strong>File share billing</strong>: Pay-as-you-go file shares</li>
+<li><strong>Redundancy</strong>: Locally Redundant Storage (LRS)</li>
+</ul>
+<p>For now go straight to <strong>Review + create</strong>, and on that
+screen hit the blue <strong>Create</strong> button.</p>
+<h1 id="task-3-create-a-file-share">Task 3: Create a file share</h1>
+<p>Navigate through the resource group to your newly created storage
+account. Under <em>Data storage</em> look for <em>File shares</em>.</p>
+<h2 id="new-file-share">New file share</h2>
+<p>Click <em>New file share</em>.</p>
+<p>Under <em>Basics</em> use the <strong>Name</strong>
+<code>labfs</code>. Leave the <em>Access tier</em> set to
+<code>Transaction optimised</code>.</p>
+<p>On the Backup page turn off <em>Enable backup</em>.</p>
+<p>Continue on to <strong>Review + create</strong>, and on that screen
+hit the blue <strong>Create</strong> button.</p>
+<h2 id="upload-file">Upload file</h2>
+<p>We’ll now try to upload a few files to your file share directly from
+our client.</p>
+<p>On the file share location, select <em>Upload</em>.</p>
+<p>Browse to any file (you can use this one!).</p>
+<p>Repeat for a few files.</p>
+<h1 id="task-4-create-a-windows-vm">Task 4: Create a Windows VM</h1>
+<p>First we’ll create a Windows VM to access our Azure storage. In the
+Azure portal:</p>
+<ol type="1">
+<li>Go to the <code>Virtual Machines</code> tab.</li>
+<li>Click <code>+ Create</code> and choose <em>Azure Virtual
+Machine</em>.</li>
+</ol>
+<p>In the steps below, if an option isn’t mentioned in the instructions
+just leave it at its default value in the Azure portal.</p>
+<h2 id="basics">Basics</h2>
+<p>In the <em>Basics</em> tab:</p>
+<ol type="1">
+<li>Set <em>Subscription</em> dropdown to <strong>Azure for
+Students</strong>.</li>
+<li>In <em>Resource group</em> pick <strong>lab_rg</strong> that you
+created above.</li>
+<li>Moving on to <strong>Instance details</strong> set the <em>Virtual
+machine name</em> to <code>windows-vm</code>.</li>
+<li><em>Region</em> should be <strong>(Europe) West
+Europe</strong>.</li>
+<li>Under <em>Availability options</em> choose <strong>No infrastructure
+redundance required</strong>. This is very important for now!</li>
+<li>For <strong>Image</strong> choose
+<code>Windows Server 2022 Datacenter: Azure Edition - x64 Gen2</code>
+from the dropdown.</li>
+<li>VM architecture should automatically set to
+<strong>x64</strong>.</li>
+</ol>
+<h3 id="basics-vm-sizing">Basics VM sizing</h3>
+<p>Under <strong>Size</strong> hit <em>See all sizes</em> and look for
+<strong>B2s</strong>.</p>
+<p>When you’ve selected it it should say:</p>
+<pre><code>Standard_B2s - Standard B2s (2 vcpus, 4 GiB memory)</code></pre>
+<h3 id="administrator-account">Administrator account</h3>
+<p>For the Administrator account settings, we’ll create an initial
+username and password for the machine. Don’t use your DkIT (or other)
+credentials here, but make sure that you remembe the values set. As
+usual, we’ll destroy the VM at the end of today’s lab.</p>
+<p>The username can be anything valid for a Windows machine, these
+instructions assume <code>developer</code>.</p>
+<p>Fill in your chosen Password and Confirm it. You won’t be able to
+access this value again.</p>
+<h3 id="inbound-port-rules">Inbound port rules</h3>
+<p>For <em>Public inbound ports</em> choose <strong>Allow selected
+ports</strong>.</p>
+<p>The <em>Select inbound ports</em> will auto-populate with <strong>RDP
+(3389)</strong> by default, which is what we need.</p>
+<p>Hit <code>Next : Disks</code> to go on to the next page.</p>
+<p>Once the page has loaded fully hit <code>Review + Create</code> to
+move on.</p>
+<h2 id="create">Create</h2>
+<p>Once <em>Validation passed</em> appears you can hit the blue
+<strong>Create</strong> button to create your VM.</p>
+<h1 id="task-5-connect-to-the-windows-vm-over-rdp">Task 5: Connect to
+the Windows VM over RDP</h1>
+<p>Use RDP to connect to the Windows VM over its public IP address and
+the username / password combination you set.</p>
+<h1 id="task-6-enable-and-connect-over-ssh">Task 6: Enable and connect
+over SSH</h1>
+<p>Although recent Windows versions have a fully functional SSH server
+available, it needs to be installed, enabled and started.</p>
+<p>This can be done using PowerShell commands. We’ll however do it the
+“Azure way” using the extensions feature.</p>
+<p>To do this navigate to the <em>Extensions + applications</em> page on
+the VM in the portal. Hit <em>Add</em>. Note there are quite a few
+extensions available!</p>
+<p>Search for <code>SSH</code> and click into the <em>OpenSSH for
+Windows</em>. Click the <em>Next</em> button at the bottom of the screen
+and then click <em>Review + create</em>. On the final screen hit
+<em>Create</em>. (You may wonder why there are 3 almost blank screens to
+navigate through. Some extensions do have configuration parameters to be
+entered.)</p>
+<p>Now try to connect over SSH. <em>The aim of this lab is to look back
+also at previous labs, so I won’t give the command(s) here!</em></p>
+<h1 id="task-7-map-the-azure-file-share-to-a-windows-drive">Task 7: Map
+the Azure file share to a Windows drive</h1>
+<p>We’re going to try and connect drive <code>N:</code> to the file
+share we created earlier.</p>
+<h2 id="map-network-drive">Map network drive</h2>
+<p>To do this, navigate to your <code>labfs</code> fileshare in the
+Azure portal and select Connect.</p>
+<ul>
+<li><strong>Drive letter</strong>: <code>N:</code></li>
+<li><strong>Authentication method</strong>: Storage account key</li>
+</ul>
+<p>Then hit <strong>Show script</strong>. This will reveal a PowerShell
+script (a much smarter way than a set of instructions!) On this hit the
+copy button.</p>
+<p>Paste into your VM’s PowerShell window. You might need to hit enter a
+few times.</p>
+<p>According to Microsoft:</p>
+<ul>
+<li>This script will check to see if this storage account is accessible
+via TCP port 445, which is the port SMB uses.</li>
+<li>If port 445 is available, your Azure file share will be persistently
+mounted.</li>
+<li>Your organization or internet service provider (ISP) may block port
+445, however you may use Azure Point-to-Site (P2S) VPN, Azure
+Site-to-Site (S2S) VPN, or ExpressRoute to tunnel SMB traffic to your
+Azure file share over a different port.</li>
+</ul>
+<h2 id="confirm-drive-mapped">Confirm drive mapped</h2>
+<p>In PowerShell change into Drive <code>N:</code>.</p>
+<h2 id="test-file-operations">Test file operations</h2>
+<p>List out the files. Can you see the file(s) you uploaded earlier?</p>
+<p>Make a folder called <code>uploaded</code> and move all the files
+into it using the VM’s PowerShell window.</p>
+<h1 id="task-8-set-up-a-ubuntu-linux-vm">Task 8: Set up a Ubuntu Linux
+VM</h1>
+<p>First we’ll create a Windows VM to access our Azure storage. In the
+Azure portal:</p>
+<ol type="1">
+<li>Go to the <code>Virtual Machines</code> tab.</li>
+<li>Click <code>+ Create</code> and choose <em>Azure Virtual
+Machine</em>.</li>
+</ol>
+<p>In the steps below, if an option isn’t mentioned in the instructions
+just leave it at its default value in the Azure portal.</p>
+<h2 id="basics-1">Basics</h2>
+<p>In the <em>Basics</em> tab:</p>
+<ol type="1">
+<li>Set <em>Subscription</em> dropdown to <strong>Azure for
+Students</strong>.</li>
+<li>In <em>Resource group</em> pick <strong>lab_rg</strong> that you
+created above.</li>
+<li>Moving on to <strong>Instance details</strong> set the <em>Virtual
+machine name</em> to <code>windows-vm</code>.</li>
+<li><em>Region</em> should be <strong>(Europe) West
+Europe</strong>.</li>
+<li>Under <em>Availability options</em> choose <strong>No infrastructure
+redundance required</strong>. This is very important for now!</li>
+<li>For <strong>Image</strong> choose
+<code>Ubuntu Server 24.04 LTS - x64 Gen2</code> from the dropdown.</li>
+<li>Set VM architecture <strong>x64</strong>.</li>
+</ol>
+<h3 id="basics-vm-sizing-1">Basics VM sizing</h3>
+<p>Under <strong>Size</strong> hit <em>See all sizes</em> and look for
+<strong>B1s</strong>.</p>
+<p>When you’ve selected it it should say:</p>
+<pre><code>Standard_B2s - Standard B2s (1 vcpus, 1 GiB memory)</code></pre>
+<h3 id="administrator-account-1">Administrator account</h3>
+<p>For the Administrator account settings, we’ll create an initial
+username and password for the machine. Don’t use your DkIT (or other)
+credentials here, but make sure that you remembe the values set. As
+usual, we’ll destroy the VM at the end of today’s lab.</p>
+<p>The username can be anything valid for a linux machine, these
+instructions assume <code>developer</code>.</p>
+<p>Fill in your chosen Password and Confirm it. You won’t be able to
+access this value again.</p>
+<h3 id="inbound-port-rules-1">Inbound port rules</h3>
+<p>For <em>Public inbound ports</em> choose <strong>Allow selected
+ports</strong>.</p>
+<p>The <em>Select inbound ports</em> will auto-populate with <strong>SSH
+(22)</strong> by default, which is what we need.</p>
+<p>Hit <code>Review + Create</code> to move on.</p>
+<h2 id="create-1">Create</h2>
+<p>Once <em>Validation passed</em> appears you can hit the blue
+<strong>Create</strong> button to create your Linux VM.</p>
+<h1 id="task-9-login-to-the-linux-vm">Task 9: Login to the Linux VM</h1>
+<p>Use SSH to connect to the Linux VM. Leave the SSH session open and
+move on to the next task.</p>
+<h1 id="task-10-drive-mapping">Task 10: Drive mapping</h1>
+<p>Linux machines have a single-root filesystem, whereas Windows is
+multi-root (has drive letters). Recall that in linux to mount a virtual
+filesystem of any sort (such as a network filesystem), we create a
+folder called a <em>mountpoint</em> which we then “cover up” with the
+mounted filesystem.</p>
+<h2 id="getting-the-mount-command">Getting the mount command</h2>
+<p>As before, navigate to your <code>labfs</code> fileshare in the Azure
+portal and select Connect. This time click the <em>Linux</em> tab. Leave
+prefilled values:</p>
+<ul>
+<li><strong>Mount point</strong>: <code>labfs</code></li>
+</ul>
+<p>Then hit <strong>Show script</strong>. This will reveal a bash script
+(again, a much smarter way than a set of instructions!) On this hit the
+copy button.</p>
+<h2 id="running-the-mount-command">Running the mount command</h2>
+<p>Paste into your SSH-connected VM. You might need to hit enter a few
+times.</p>
+<p>Note the message you’ll probably get relating to <em>systemd</em>. Do
+as suggested, by running:</p>
+<pre><code>sudo systemctl daemon-reload</code></pre>
+<h2 id="checking-is-the-drive-mounted">Checking is the drive
+mounted</h2>
+<p>To show all mounted filesystems use the <code>mount</code> command on
+its own:</p>
+<pre><code>mount</code></pre>
+<p>You’ll see quite a long list including the VMs “disk” and a number of
+local virtual filesystems like <code>/proc</code>. To get bash to show
+<code>labfs</code> on its own we can use:</p>
+<pre><code>mount | grep labfs</code></pre>
+<p>This should show that our Azure file share is mounted at, or
+available on, <code>/mnt/labfs</code>.</p>
+<h2 id="test-file-operations-1">Test file operations</h2>
+<p>Change into the <code>labfs</code> directory</p>
+<pre><code>cd /mnt/labfs</code></pre>
+<p>List out the files in it</p>
+<pre><code>ls</code></pre>
+<p>Try the same command in detail form (use the <code>-l</code> switch).
+What does the file ownership indications tell you?</p>
+<h1 id="task-11-experiment">Task 11: Experiment</h1>
+<p>I highly recommend that you take the opportunity to test out some
+operations on the filesystem now concurrently accessible from Linux VM,
+Windows VM and directly from the Azure portal.</p>
+<p>Do you see any opportunities for using this architecture in your own
+work?</p>
+<h1 id="task-12-delete">Task 12: Delete</h1>
+<p>When you’ve finished, delete your VMs and the azure filesystem. As
+usual, deleting the resource group is by far the easiest and most
+reliable way. To confirm deletion works, best to leave the RDP and SSH
+sessions to the VMs open while you delete them - they should
+disconnect!</p>
+<p>One thing you’ll find is that the Azure file share is protected by a
+<em>Lock</em> that prevents deletion. To remove the lock, navigate to
+your storage account, Settings, Locks and delete the lock. Then try the
+deletion command again.</p>
+<pre><code>az group delete -n lab_rg</code></pre>
+</body>
+</html>
