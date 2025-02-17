@@ -51,4 +51,8 @@ pre {
     background-color: rgb(245,255,245);
 }
 
+img[role=img] {
+    max-width: 100%;
+}
+
 /* end */
