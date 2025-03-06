@@ -8,6 +8,14 @@
 In this lab we'll take a look at load-balanced configuration, where incoming traffic is distributed among 2 or more backend VMs. 
 The Azure network setup is similar to previous weeks. 
 
+Reasons for load balancing: 
+
+- Enables capacity adjustment
+- Cost optimisation
+- Allows redundancy in case of malfunction
+- Facilitates auto-scaling (but doesn't do the scaling for you!)
+
+
 # Setup
 
 ## Portal login
