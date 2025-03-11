@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Azure networking lab</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../lab.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Azure networking lab</h1>
+</header>
+<p>So far, we have used the (sensible) defaults for Azure Networking
+when we’ve created VMs. Unlike AWS, we don’t have to understand quite as
+much about Azure’s VNets to just get a basic Windows or Linux VM up and
+running. In today’s lab we will look at the basic Azure networking in
+more detail.</p>
+<p>Also it’s time to make greater use of the (in my opinion very good)
+vendor-provided guides. In ways today’s lab will point you towards them
+a bit more.</p>
+<h1 id="resource-group-creation">Resource group creation</h1>
+<p>For today’s lab use the CLI or Portal to create the usual
+<code>lab_rg</code> resource group located in <code>westeurope</code>
+region.</p>
+<h1 id="vnet-creation">VNet creation</h1>
+<p>Create a new vnet named <code>lab-vnet</code> within
+<code>lab_rg</code> using the portal or CLI with the range
+10.0.0.0/16.</p>
+<h2 id="subnet-creation">Subnet creation</h2>
+<p>Delete the suggested <em>default</em> subnet.</p>
+<p>Create a subnet named <code>lab-subnet</code> within the
+<code>lab-vnet</code> with the range 10.0.1.0/24.</p>
+<p>In the portal the defaults should otherwise work fine.</p>
+<h1 id="network-security-group-creation">Network security group
+creation</h1>
+<p>Network security groups are broadly similar to AWS Security
+Groups.</p>
+<p>Create a network security group in <code>lab_rg</code> named
+<code>lab-nsg</code> that permits RDP and SSH inbound from any IP
+address.</p>
+<h1 id="vm-creation">VM creation</h1>
+<p>We’re going to examine a standard linux and Windows VM during today’s
+lab.</p>
+<p>Use the instructions for previous labs so far to create one of
+each.</p>
+<h2 id="linux-vm">Linux VM</h2>
+<ul>
+<li><strong>Image:</strong> Ubuntu Server 24.04 LTS</li>
+<li><strong>Size:</strong> B1s</li>
+</ul>
+<p>On the networking page Virtual network drop down to
+<code>lab-vnet</code>, and not the default <em>(new)</em> selection.</p>
+<p>Under NIC network security group select Advanced and pick
+<code>lab-nsg</code> (from above).</p>
+<p>Turn on Delete public IP and NIC when VM is deleted.</p>
+<h2 id="windows-vm">Windows VM</h2>
+<ul>
+<li><strong>Image:</strong> Windows Server 2022 Datacenter</li>
+<li><strong>Size:</strong> B2s</li>
+</ul>
+<p>Same as for the Linux VM, on the networking page Virtual network drop
+down to <code>lab-vnet</code>, and not the default <em>(new)</em>
+selection.</p>
+<p>Under NIC network security group select Advanced and pick
+<code>lab-nsg</code> (from above).</p>
+<p>Turn on Delete public IP and NIC when VM is deleted.</p>
+<h2 id="windows-vm-ssh-server">Windows VM SSH server</h2>
+<p>Activate the OpenSSH server extension for Windows.</p>
+<h1 id="resource-group-deletion">Resource group deletion</h1>
+<p>Delete the resource group using the CLI and/or Portal.</p>
+</body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Azure load balancer lab</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+body {
+font-family: sans-serif;
+background-color: rgb(245,245,245);
+}
+#TOC {
+padding: 10px;
+background-color: lightyellow;
+}
+h1.title {
+background-color: black;
+color: white;
+padding: 5px;
+font-size: 150%;
+}
+h1 {
+background-color: lightcyan;
+padding: 5px;
+font-size: 120%;
+}
+h2 {
+color: darkblue;
+font-size: 100%;
+}
+h3 {
+color: darkgreen;
+font-size: 100%;
+}
+code {
+font-weight: bold;
+font-size: 120%;
+}
+pre {
+font-size: 120%;
+padding: 0.5em;
+font-weight: bold;
+border-style: solid;
+border-width: 2px;
+border-color: rgb(100,100,100);
+background-color: rgb(245,255,245);
+}
+img[role=img] {
+max-width: 100%;
+}
+
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Azure load balancer lab</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#setup" id="toc-setup"><span class="toc-section-number">1</span> Setup</a>
+<ul>
+<li><a href="#portal-login" id="toc-portal-login"><span class="toc-section-number">1.1</span> Portal login</a></li>
+</ul></li>
+<li><a href="#resource-group-creation" id="toc-resource-group-creation"><span class="toc-section-number">2</span> Resource group creation</a></li>
+<li><a href="#scenario" id="toc-scenario"><span class="toc-section-number">3</span> Scenario</a>
+<ul>
+<li><a href="#network-setup" id="toc-network-setup"><span class="toc-section-number">3.1</span> Network setup</a></li>
+<li><a href="#vm-setup" id="toc-vm-setup"><span class="toc-section-number">3.2</span> VM setup</a></li>
+<li><a href="#nsg-rules" id="toc-nsg-rules"><span class="toc-section-number">3.3</span> NSG rules</a></li>
+<li><a href="#confirm-connectivity" id="toc-confirm-connectivity"><span class="toc-section-number">3.4</span> Confirm connectivity</a></li>
+</ul></li>
+<li><a href="#load-balancer-scenario" id="toc-load-balancer-scenario"><span class="toc-section-number">4</span> Load balancer Scenario</a>
+<ul>
+<li><a href="#public-ip" id="toc-public-ip"><span class="toc-section-number">4.1</span> Public IP</a></li>
+<li><a href="#load-balancer-creation-in-portal" id="toc-load-balancer-creation-in-portal"><span class="toc-section-number">4.2</span> Load balancer creation in
+Portal</a></li>
+<li><a href="#basics" id="toc-basics"><span class="toc-section-number">4.3</span> Basics</a></li>
+<li><a href="#frontend-ip-configuration" id="toc-frontend-ip-configuration"><span class="toc-section-number">4.4</span> Frontend IP configuration</a></li>
+<li><a href="#backend-pools" id="toc-backend-pools"><span class="toc-section-number">4.5</span> Backend pools</a></li>
+<li><a href="#inbound-rules" id="toc-inbound-rules"><span class="toc-section-number">4.6</span> Inbound rules</a>
+<ul>
+<li><a href="#health-probe" id="toc-health-probe"><span class="toc-section-number">4.6.1</span> Health probe</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#usage" id="toc-usage"><span class="toc-section-number">5</span> Usage</a>
+<ul>
+<li><a href="#ssh-host-keys" id="toc-ssh-host-keys"><span class="toc-section-number">5.1</span> SSH host keys</a></li>
+<li><a href="#backend-uniformity" id="toc-backend-uniformity"><span class="toc-section-number">5.2</span> Backend uniformity</a></li>
+</ul></li>
+<li><a href="#non-cloud-applicability" id="toc-non-cloud-applicability"><span class="toc-section-number">6</span> Non-cloud applicability</a></li>
+<li><a href="#reminder---delete-resources" id="toc-reminder---delete-resources"><span class="toc-section-number">7</span> Reminder - delete resources</a></li>
+</ul>
+</nav>
+<p><strong>Important links:</strong></p>
+<ul>
+<li><a href="https://learn.microsoft.com/en-us/azure/load-balancer/load-balancer-overview">Azure
+load balancer documentation</a></li>
+</ul>
+<p>In this lab we’ll take a look at load-balanced configuration, where
+incoming traffic is distributed among 2 or more backend VMs. The Azure
+network setup is similar to previous weeks.</p>
+<p>Reasons for load balancing:</p>
+<ul>
+<li>Enables capacity adjustment</li>
+<li>Cost optimisation</li>
+<li>Allows redundancy in case of malfunction</li>
+<li>Facilitates auto-scaling (but doesn’t do the scaling for you!)</li>
+</ul>
+<h1 data-number="1" id="setup"><span class="header-section-number">1</span> Setup</h1>
+<h2 data-number="1.1" id="portal-login"><span class="header-section-number">1.1</span> Portal login</h2>
+<p>Make sure that you can login to the <a href="https://portal.azure.com">Azure portal</a>.</p>
+<h1 data-number="2" id="resource-group-creation"><span class="header-section-number">2</span> Resource group creation</h1>
+<p>Create <code>lab_rg</code> located in <code>westeurope</code> using
+the CLI.</p>
+<h1 data-number="3" id="scenario"><span class="header-section-number">3</span> Scenario</h1>
+<p><img role="img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDEyLjIuMSAoMjAyNDEyMDYuMjM1MykKIC0tPgo8IS0tIFRpdGxlOiBHIFBhZ2VzOiAxIC0tPgo8c3ZnIHdpZHRoPSI0NjdwdCIgaGVpZ2h0PSIyODFwdCIKIHZpZXdCb3g9IjAuMDAgMC4wMCA0NjcuMDAgMjgxLjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPGcgaWQ9ImdyYXBoMCIgY2xhc3M9ImdyYXBoIiB0cmFuc2Zvcm09InNjYWxlKDEgMSkgcm90YXRlKDApIHRyYW5zbGF0ZSg0IDI3NykiPgo8dGl0bGU+RzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiIHBvaW50cz0iLTQsNCAtNCwtMjc3IDQ2MywtMjc3IDQ2Myw0IC00LDQiLz4KPGcgaWQ9ImNsdXN0MSIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfcmc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijk1LjI1LC04IDk1LjI1LC0yNjUgNDUxLC0yNjUgNDUxLC04IDk1LjI1LC04Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI3My4xMiIgeT0iLTI0Ny43IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9yZyAod2VzdGV1cm9wZSk8L3RleHQ+CjwvZz4KPGcgaWQ9ImNsdXN0MiIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfdm5ldDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMTAzLjI1LC0xNiAxMDMuMjUsLTE4OCA0NDMsLTE4OCA0NDMsLTE2IDEwMy4yNSwtMTYiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjczLjEyIiB5PSItMjMuMiIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfdm5ldCAxMC4wLjAuMC8xNjwvdGV4dD4KPC9nPgo8ZyBpZD0iY2x1c3QzIiBjbGFzcz0iY2x1c3RlciI+Cjx0aXRsZT5jbHVzdGVyX2xhYl9zdWJuZXQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjI0MywtNDkgMjQzLC0xODAgNDM1LC0xODAgNDM1LC00OSAyNDMsLTQ5Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjMzOSIgeT0iLTU2LjIiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3N1Ym5ldCAxMC4wLjEuMC8yNDwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCAtLT4KPGcgaWQ9Im5vZGUxIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5jbGllbnQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNzUuMjUsLTE0NSAwLC0xNDUgMCwtMTA5IDc1LjI1LC0xMDkgNzUuMjUsLTE0NSIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNy42MiIgeT0iLTEyMS45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5Vc2VyIGNsaWVudDwvdGV4dD4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMSAtLT4KPGcgaWQ9Im5vZGU2IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzE8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZWVuIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjIxNSwtMTE4IDExMS4yNSwtMTE4IDExMS4yNSwtODIgMjE1LC04MiAyMTUsLTExOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxNjMuMTIiIHk9Ii05NC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfcHVibGljX2lwXzE8L3RleHQ+CjwvZz4KPCEtLSBjbGllbnQmIzQ1OyZndDtsYWJfcHVibGljX2lwXzEgLS0+CjxnIGlkPSJlZGdlNyIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+Y2xpZW50JiM0NTsmZ3Q7bGFiX3B1YmxpY19pcF8xPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTc1LjY4LC0xMTguOUM4My4zLC0xMTcuMjMgOTEuNTIsLTExNS40NCA5OS43NiwtMTEzLjY0Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjEwMC40NCwtMTE3LjA3IDEwOS40NiwtMTExLjUxIDk4Ljk0LC0xMTAuMjMgMTAwLjQ0LC0xMTcuMDciLz4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMiAtLT4KPGcgaWQ9Im5vZGU3IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzI8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZWVuIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjIxNSwtMTcyIDExMS4yNSwtMTcyIDExMS4yNSwtMTM2IDIxNSwtMTM2IDIxNSwtMTcyIi8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE2My4xMiIgeT0iLTE0OC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfcHVibGljX2lwXzI8L3RleHQ+CjwvZz4KPCEtLSBjbGllbnQmIzQ1OyZndDtsYWJfcHVibGljX2lwXzIgLS0+CjxnIGlkPSJlZGdlOCIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+Y2xpZW50JiM0NTsmZ3Q7bGFiX3B1YmxpY19pcF8yPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTc1LjY4LC0xMzUuMUM4My4zLC0xMzYuNzcgOTEuNTIsLTEzOC41NiA5OS43NiwtMTQwLjM2Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijk4Ljk0LC0xNDMuNzcgMTA5LjQ2LC0xNDIuNDkgMTAwLjQ0LC0xMzYuOTMgOTguOTQsLTE0My43NyIvPgo8L2c+CjwhLS0gbGFiX3ZtXzEgLS0+CjxnIGlkPSJub2RlMiIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX3ZtXzE8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNDI3LC0xMTggMzU2LjI1LC0xMTggMzU2LjI1LC04MiA0MjcsLTgyIDQyNywtMTE4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjM5MS42MiIgeT0iLTk0Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl92bV8xPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25pY18xIC0tPgo8ZyBpZD0ibm9kZTMiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl9uaWNfMTwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Y3lhbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzMjAuMjUsLTExOCAyNTEsLTExOCAyNTEsLTgyIDMyMC4yNSwtODIgMzIwLjI1LC0xMTgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjg1LjYyIiB5PSItOTQuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX25pY18xPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25pY18xJiM0NTsmZ3Q7bGFiX3ZtXzEgLS0+CjxnIGlkPSJlZGdlMyIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bGFiX25pY18xJiM0NTsmZ3Q7bGFiX3ZtXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzIwLjY4LC0xMDBDMzI4LjI0LC0xMDAgMzM2LjM4LC0xMDAgMzQ0LjM0LC0xMDAiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzQ0LjI3LC0xMDMuNSAzNTQuMjcsLTEwMCAzNDQuMjcsLTk2LjUgMzQ0LjI3LC0xMDMuNSIvPgo8L2c+CjwhLS0gbGFiX3ZtXzIgLS0+CjxnIGlkPSJub2RlNCIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX3ZtXzI8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNDI3LC0xNzIgMzU2LjI1LC0xNzIgMzU2LjI1LC0xMzYgNDI3LC0xMzYgNDI3LC0xNzIiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzkxLjYyIiB5PSItMTQ4Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl92bV8yPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25pY18yIC0tPgo8ZyBpZD0ibm9kZTUiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl9uaWNfMjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Y3lhbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzMjAuMjUsLTE3MiAyNTEsLTE3MiAyNTEsLTEzNiAzMjAuMjUsLTEzNiAzMjAuMjUsLTE3MiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIyODUuNjIiIHk9Ii0xNDguOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX25pY18yPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25pY18yJiM0NTsmZ3Q7bGFiX3ZtXzIgLS0+CjxnIGlkPSJlZGdlNCIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bGFiX25pY18yJiM0NTsmZ3Q7bGFiX3ZtXzI8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzIwLjY4LC0xNTRDMzI4LjI0LC0xNTQgMzM2LjM4LC0xNTQgMzQ0LjM0LC0xNTQiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzQ0LjI3LC0xNTcuNSAzNTQuMjcsLTE1NCAzNDQuMjcsLTE1MC41IDM0NC4yNywtMTU3LjUiLz4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMSYjNDU7Jmd0O2xhYl9uaWNfMSAtLT4KPGcgaWQ9ImVkZ2U1IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzEmIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMjE1LjIzLC0xMDBDMjIzLjE1LC0xMDAgMjMxLjI5LC0xMDAgMjM5LjA4LC0xMDAiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjM5LjA1LC0xMDMuNSAyNDkuMDUsLTEwMCAyMzkuMDUsLTk2LjUgMjM5LjA1LC0xMDMuNSIvPgo8L2c+CjwhLS0gbGFiX3B1YmxpY19pcF8yJiM0NTsmZ3Q7bGFiX25pY18yIC0tPgo8ZyBpZD0iZWRnZTYiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9wdWJsaWNfaXBfMiYjNDU7Jmd0O2xhYl9uaWNfMjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0yMTUuMjMsLTE1NEMyMjMuMTUsLTE1NCAyMzEuMjksLTE1NCAyMzkuMDgsLTE1NCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMzkuMDUsLTE1Ny41IDI0OS4wNSwtMTU0IDIzOS4wNSwtMTUwLjUgMjM5LjA1LC0xNTcuNSIvPgo8L2c+CjwhLS0gbGFiX25zZyAtLT4KPGcgaWQ9Im5vZGU4IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfbnNnPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRwaW5rIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjE5Mi4xMiwtMjMyIDEzNC4xMiwtMjMyIDEzNC4xMiwtMTk2IDE5Mi4xMiwtMTk2IDE5Mi4xMiwtMjMyIi8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE2My4xMiIgeT0iLTIwOC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfbnNnPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25zZyYjNDU7Jmd0O2xhYl9uaWNfMSAtLT4KPGcgaWQ9ImVkZ2UxIiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfbnNnJiM0NTsmZ3Q7bGFiX25pY18xPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTE5Mi41NywtMjA2LjA5QzIwMC42LC0yMDIuNzcgMjA4LjgxLC0xOTguMiAyMTUsLTE5MiAyMzcuMjMsLTE2OS43NCAyMjIuNzEsLTE1MS4wNCAyNDMsLTEyNyAyNDMuMjUsLTEyNi43IDI0My41LC0xMjYuNDEgMjQzLjc2LC0xMjYuMTIiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjQ2LjE0LC0xMjguNjkgMjUxLjAyLC0xMTkuMjkgMjQxLjM0LC0xMjMuNTkgMjQ2LjE0LC0xMjguNjkiLz4KPC9nPgo8IS0tIGxhYl9uc2cmIzQ1OyZndDtsYWJfbmljXzIgLS0+CjxnIGlkPSJlZGdlMiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bGFiX25zZyYjNDU7Jmd0O2xhYl9uaWNfMjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0xOTIuNTksLTIwMi4yNEMxOTkuOTUsLTE5OS4wNSAyMDcuODIsLTE5NS41IDIxNSwtMTkyIDIyMy45OSwtMTg3LjYxIDIzMy40OSwtMTgyLjY2IDI0Mi40OCwtMTc3LjgiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjQzLjkzLC0xODEgMjUxLjAzLC0xNzMuMTMgMjQwLjU4LC0xNzQuODYgMjQzLjkzLC0xODEiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=" /></p>
+<h2 data-number="3.1" id="network-setup"><span class="header-section-number">3.1</span> Network setup</h2>
+<p>Our network setup will be based on previous week’s lab. Use last
+week’s lab as a guide to create the VNet, Subnet (only 1), Network
+Security Group, Public IP Address and NIC. Although you <em>can</em>
+copy and paste the full command list below, you should go through it and
+make sure you understand what each does:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the vnet</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>az network vnet create <span class="op">-</span>n lab_vnet <span class="op">-</span>g lab_rg <span class="op">-</span>l westeurope <span class="op">--</span>address-prefix <span class="dv">10.0</span><span class="op">.</span><span class="dv">0.0</span><span class="op">/</span><span class="dv">16</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create the subnet (in lab_vnet)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>az network vnet subnet create <span class="op">-</span>n lab_subnet <span class="op">-</span>g lab_rg <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>address-prefix <span class="dv">10.0</span><span class="op">.</span><span class="dv">1.0</span><span class="op">/</span><span class="dv">24</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># create the network security group</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>az network nsg create <span class="op">-</span>g lab_rg <span class="op">-</span>n lab_nsg</span></code></pre></div>
+<h2 data-number="3.2" id="vm-setup"><span class="header-section-number">3.2</span> VM setup</h2>
+<p>The 2 VMs are to be created on <code>B1s</code> size using Ubuntu
+24.04. Instructions for the first VM:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the public IP address (to attach later)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>az network public-ip create <span class="op">-</span>g lab_rg <span class="op">-</span>n lab_public_ip_1</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># create the NIC (w/ public IP attached)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>az network nic create <span class="op">-</span>g lab_rg <span class="op">--</span>name lab_nic_1 <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>subnet lab_subnet <span class="op">--</span>network-security-group lab_nsg <span class="op">--</span>public-ip-address lab_public_ip_1</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># machine 1</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>az vm create <span class="op">-</span>g lab_rg <span class="op">-</span>n lab-vm-1 <span class="op">--</span>location westeurope <span class="op">--</span>nics lab_nic_1  <span class="op">--</span>image <span class="st">&#39;Canonical:ubuntu-24_04-lts:server:latest&#39;</span> <span class="op">--</span>admin-username developer <span class="op">--</span>admin-password 1Password2025<span class="op">.</span>  <span class="op">--</span>size Standard_B1s </span></code></pre></div>
+<p><strong>Do the same again</strong> for <code>lab-vm-2</code>,
+creating a second public IP, NIC and VM <strong>replacing 1 with 2 where
+appropriate.</strong> <em>You’ll need to read the commands in detail for
+this!</em></p>
+<h2 data-number="3.3" id="nsg-rules"><span class="header-section-number">3.3</span> NSG rules</h2>
+<div class="sourceCode" id="cb3"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>az network nsg rule create <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name lab_nsg <span class="op">--</span>name AllowSSHFromInternet <span class="op">--</span>protocol tcp <span class="op">--</span>direction inbound <span class="op">--</span>source-address-prefix <span class="st">&#39;*&#39;</span> <span class="op">--</span>destination-address-prefix <span class="st">&#39;*&#39;</span> <span class="op">--</span>destination-port-range <span class="dv">22</span> <span class="op">--</span>access allow <span class="op">--</span>priority <span class="dv">200</span></span></code></pre></div>
+<h2 data-number="3.4" id="confirm-connectivity"><span class="header-section-number">3.4</span> Confirm connectivity</h2>
+<p>Use SSH to confirm that you can reach both VMs on their public
+IPs.</p>
+<h1 data-number="4" id="load-balancer-scenario"><span class="header-section-number">4</span> Load balancer Scenario</h1>
+<p>Now let’s add a load balancer so that connecting to one public IP
+will get us routed to one of the two VMs.</p>
+<p><img role="img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDEyLjIuMSAoMjAyNDEyMDYuMjM1MykKIC0tPgo8IS0tIFRpdGxlOiBHIFBhZ2VzOiAxIC0tPgo8c3ZnIHdpZHRoPSI2MDlwdCIgaGVpZ2h0PSIyOTZwdCIKIHZpZXdCb3g9IjAuMDAgMC4wMCA2MDkuMDAgMjk2LjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPGcgaWQ9ImdyYXBoMCIgY2xhc3M9ImdyYXBoIiB0cmFuc2Zvcm09InNjYWxlKDEgMSkgcm90YXRlKDApIHRyYW5zbGF0ZSg0IDI5MikiPgo8dGl0bGU+RzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiIHBvaW50cz0iLTQsNCAtNCwtMjkyIDYwNSwtMjkyIDYwNSw0IC00LDQiLz4KPGcgaWQ9ImNsdXN0MSIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfcmc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjEwOCwtOCAxMDgsLTI4MCA1OTMsLTI4MCA1OTMsLTggMTA4LC04Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjM1MC41IiB5PSItMjYyLjciIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3JnICh3ZXN0ZXVyb3BlKTwvdGV4dD4KPC9nPgo8ZyBpZD0iY2x1c3QyIiBjbGFzcz0iY2x1c3RlciI+Cjx0aXRsZT5jbHVzdGVyX2xhYl92bmV0PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxMTYsLTE2IDExNiwtMjAxIDU4NSwtMjAxIDU4NSwtMTYgMTE2LC0xNiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNTAuNSIgeT0iLTIzLjIiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3ZuZXQgMTAuMC4wLjAvMTY8L3RleHQ+CjwvZz4KPGcgaWQ9ImNsdXN0MyIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfc3VibmV0PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzODUsLTYyIDM4NSwtMTkzIDU3NywtMTkzIDU3NywtNjIgMzg1LC02MiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI0ODEiIHk9Ii02OS4yIiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9zdWJuZXQgMTAuMC4xLjAvMjQ8L3RleHQ+CjwvZz4KPCEtLSBjbGllbnQgLS0+CjxnIGlkPSJub2RlMSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+Y2xpZW50PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmV5IiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjgxLjYyLC0xMzkgNi4zOCwtMTM5IDYuMzgsLTEwMyA4MS42MiwtMTAzIDgxLjYyLC0xMzkiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNDQiIHk9Ii0xMTUuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+VXNlciBjbGllbnQ8L3RleHQ+CjwvZz4KPCEtLSBsb2FkX2JhbGFuY2VyX3B1YmxpY19pcCAtLT4KPGcgaWQ9Im5vZGU5IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sb2FkX2JhbGFuY2VyX3B1YmxpY19pcDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Z3JleSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMTcuMjUsLTE0MS41IDEyNCwtMTQxLjUgMTI0LC0xMDAuNSAyMTcuMjUsLTEwMC41IDIxNy4yNSwtMTQxLjUiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTcwLjYyIiB5PSItMTI0LjIiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+TG9hZCBiYWxhbmNlcjwvdGV4dD4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMTcwLjYyIiB5PSItMTA3LjciIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+UHVibGljIElQPC90ZXh0Pgo8L2c+CjwhLS0gY2xpZW50JiM0NTsmZ3Q7bG9hZF9iYWxhbmNlcl9wdWJsaWNfaXAgLS0+CjxnIGlkPSJlZGdlMTAiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmNsaWVudCYjNDU7Jmd0O2xvYWRfYmFsYW5jZXJfcHVibGljX2lwPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTgyLjA1LC0xMjFDOTEuNTQsLTEyMSAxMDEuOTcsLTEyMSAxMTIuMjIsLTEyMSIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxMTIuMTQsLTEyNC41IDEyMi4xNCwtMTIxIDExMi4xNCwtMTE3LjUgMTEyLjE0LC0xMjQuNSIvPgo8L2c+CjwhLS0gYWRtaW4gLS0+CjxnIGlkPSJub2RlMiIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+YWRtaW48L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iODgsLTE5MyAwLC0xOTMgMCwtMTU3IDg4LC0xNTcgODgsLTE5MyIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI0NCIgeT0iLTE2OS45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5BZG1pbiBjbGllbnQ8L3RleHQ+CjwvZz4KPCEtLSBsYWJfdm1fMSAtLT4KPGcgaWQ9Im5vZGUzIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfdm1fMTwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Z3JleSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI1NjksLTEzMSA0OTguMjUsLTEzMSA0OTguMjUsLTk1IDU2OSwtOTUgNTY5LC0xMzEiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNTMzLjYyIiB5PSItMTA3Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl92bV8xPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX25pY18xIC0tPgo8ZyBpZD0ibm9kZTQiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl9uaWNfMTwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Y3lhbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI0NjIuMjUsLTEzMSAzOTMsLTEzMSAzOTMsLTk1IDQ2Mi4yNSwtOTUgNDYyLjI1LC0xMzEiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iNDI3LjYyIiB5PSItMTA3Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9uaWNfMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xIC0tPgo8ZyBpZD0iZWRnZTYiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTQ2Mi42OCwtMTEzQzQ3MC4yNCwtMTEzIDQ3OC4zOCwtMTEzIDQ4Ni4zNCwtMTEzIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjQ4Ni4yNywtMTE2LjUgNDk2LjI3LC0xMTMgNDg2LjI3LC0xMDkuNSA0ODYuMjcsLTExNi41Ii8+CjwvZz4KPCEtLSBsYWJfdm1fMiAtLT4KPGcgaWQ9Im5vZGU1IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfdm1fMjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Z3JleSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI1NjksLTE4NSA0OTguMjUsLTE4NSA0OTguMjUsLTE0OSA1NjksLTE0OSA1NjksLTE4NSIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI1MzMuNjIiIHk9Ii0xNjEuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3ZtXzI8L3RleHQ+CjwvZz4KPCEtLSBsYWJfbmljXzIgLS0+CjxnIGlkPSJub2RlNiIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX25pY18yPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRjeWFuIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjQ2Mi4yNSwtMTg1IDM5MywtMTg1IDM5MywtMTQ5IDQ2Mi4yNSwtMTQ5IDQ2Mi4yNSwtMTg1Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjQyNy42MiIgeT0iLTE2MS45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfbmljXzI8L3RleHQ+CjwvZz4KPCEtLSBsYWJfbmljXzImIzQ1OyZndDtsYWJfdm1fMiAtLT4KPGcgaWQ9ImVkZ2U3IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfbmljXzImIzQ1OyZndDtsYWJfdm1fMjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik00NjIuNjgsLTE2N0M0NzAuMjQsLTE2NyA0NzguMzgsLTE2NyA0ODYuMzQsLTE2NyIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI0ODYuMjcsLTE3MC41IDQ5Ni4yNywtMTY3IDQ4Ni4yNywtMTYzLjUgNDg2LjI3LC0xNzAuNSIvPgo8L2c+CjwhLS0gbGFiX3B1YmxpY19pcF8xIC0tPgo8ZyBpZD0ibm9kZTciIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl9wdWJsaWNfaXBfMTwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Z3JlZW4iIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzU3LC04NSAyNTMuMjUsLTg1IDI1My4yNSwtNDkgMzU3LC00OSAzNTcsLTg1Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjMwNS4xMiIgeT0iLTYxLjk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9wdWJsaWNfaXBfMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMSYjNDU7Jmd0O2xhYl9uaWNfMSAtLT4KPGcgaWQ9ImVkZ2U4IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzEmIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzU0LjQ0LC04NS40NEMzNjMuNTcsLTg4LjkzIDM3My4wNywtOTIuNTYgMzgyLjA3LC05NS45OSIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzODAuNzQsLTk5LjIzIDM5MS4zMywtOTkuNTMgMzgzLjI0LC05Mi42OSAzODAuNzQsLTk5LjIzIi8+CjwvZz4KPCEtLSBsYWJfcHVibGljX2lwXzIgLS0+CjxnIGlkPSJub2RlOCIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX3B1YmxpY19pcF8yPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmVlbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzNTcsLTE5MyAyNTMuMjUsLTE5MyAyNTMuMjUsLTE1NyAzNTcsLTE1NyAzNTcsLTE5MyIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzMDUuMTIiIHk9Ii0xNjkuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3B1YmxpY19pcF8yPC90ZXh0Pgo8L2c+CjwhLS0gbGFiX3B1YmxpY19pcF8yJiM0NTsmZ3Q7bGFiX25pY18yIC0tPgo8ZyBpZD0iZWRnZTkiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9wdWJsaWNfaXBfMiYjNDU7Jmd0O2xhYl9uaWNfMjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0zNTcuMjMsLTE3MS42MUMzNjUuMTUsLTE3MS4wOCAzNzMuMjksLTE3MC41NCAzODEuMDgsLTE3MC4wMiIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzODEuMywtMTczLjUyIDM5MS4wNSwtMTY5LjM2IDM4MC44NCwtMTY2LjUzIDM4MS4zLC0xNzMuNTIiLz4KPC9nPgo8IS0tIGxvYWRfYmFsYW5jZXIgLS0+CjxnIGlkPSJub2RlMTAiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxvYWRfYmFsYW5jZXI8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzUxLjc1LC0xMzkgMjU4LjUsLTEzOSAyNTguNSwtMTAzIDM1MS43NSwtMTAzIDM1MS43NSwtMTM5Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjMwNS4xMiIgeT0iLTExNS45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5Mb2FkIGJhbGFuY2VyPC90ZXh0Pgo8L2c+CjwhLS0gbG9hZF9iYWxhbmNlcl9wdWJsaWNfaXAmIzQ1OyZndDtsb2FkX2JhbGFuY2VyIC0tPgo8ZyBpZD0iZWRnZTEiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxvYWRfYmFsYW5jZXJfcHVibGljX2lwJiM0NTsmZ3Q7bG9hZF9iYWxhbmNlcjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0yMTcuNiwtMTIxQzIyNy4wNSwtMTIxIDIzNy4xMiwtMTIxIDI0Ni45MSwtMTIxIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjI0Ni43MiwtMTI0LjUgMjU2LjcyLC0xMjEgMjQ2LjcyLC0xMTcuNSAyNDYuNzIsLTEyNC41Ii8+CjwvZz4KPCEtLSBsb2FkX2JhbGFuY2VyJiM0NTsmZ3Q7bGFiX25pY18xIC0tPgo8ZyBpZD0iZWRnZTIiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxvYWRfYmFsYW5jZXImIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzUyLjAyLC0xMTcuOTVDMzYxLjY3LC0xMTcuMzEgMzcxLjg0LC0xMTYuNjQgMzgxLjQ2LC0xMTYiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzgxLjU5LC0xMTkuNSAzOTEuMzQsLTExNS4zNCAzODEuMTMsLTExMi41MSAzODEuNTksLTExOS41Ii8+CjwvZz4KPCEtLSBsb2FkX2JhbGFuY2VyJiM0NTsmZ3Q7bGFiX25pY18yIC0tPgo8ZyBpZD0iZWRnZTMiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxvYWRfYmFsYW5jZXImIzQ1OyZndDtsYWJfbmljXzI8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzUyLjAyLC0xMzguNTJDMzYxLjg4LC0xNDIuMjkgMzcyLjI4LC0xNDYuMjYgMzgyLjA5LC0xNTAiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzgwLjg0LC0xNTMuMjcgMzkxLjQzLC0xNTMuNTcgMzgzLjM0LC0xNDYuNzMgMzgwLjg0LC0xNTMuMjciLz4KPC9nPgo8IS0tIGxhYl9uc2cgLS0+CjxnIGlkPSJub2RlMTEiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl9uc2c8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodHBpbmsiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzM0LjEyLC0yNDcgMjc2LjEyLC0yNDcgMjc2LjEyLC0yMTEgMzM0LjEyLC0yMTEgMzM0LjEyLC0yNDciLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzA1LjEyIiB5PSItMjIzLjk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9uc2c8L3RleHQ+CjwvZz4KPCEtLSBsYWJfbnNnJiM0NTsmZ3Q7bGFiX25pY18xIC0tPgo8ZyBpZD0iZWRnZTQiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9uc2cmIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzM0LjU5LC0yMTkuOTFDMzQyLjYxLC0yMTYuMjcgMzUwLjgyLC0yMTEuMzkgMzU3LC0yMDUgMzc4Ljg2LC0xODIuMzggMzY0LjcxLC0xNjQuMDQgMzg1LC0xNDAgMzg1LjI1LC0xMzkuNyAzODUuNSwtMTM5LjQxIDM4NS43NiwtMTM5LjEyIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjM4OC4xNCwtMTQxLjY5IDM5My4wMiwtMTMyLjI5IDM4My4zNCwtMTM2LjU5IDM4OC4xNCwtMTQxLjY5Ii8+CjwvZz4KPCEtLSBsYWJfbnNnJiM0NTsmZ3Q7bGFiX25pY18yIC0tPgo8ZyBpZD0iZWRnZTUiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9uc2cmIzQ1OyZndDtsYWJfbmljXzI8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMzM0LjUyLC0yMTUuOTZDMzQxLjg5LC0yMTIuNDkgMzQ5Ljc3LC0yMDguNjcgMzU3LC0yMDUgMzY1Ljc0LC0yMDAuNTYgMzc0Ljk5LC0xOTUuNjUgMzgzLjgxLC0xOTAuODgiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzg1LjQ3LC0xOTMuOTYgMzkyLjU3LC0xODYuMSAzODIuMTEsLTE4Ny44MiAzODUuNDcsLTE5My45NiIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" /></p>
+<h2 data-number="4.1" id="public-ip"><span class="header-section-number">4.1</span> Public IP</h2>
+<p>The load balancer is going to have its own public IP. Let’s create it
+now, named <code>lab_lb_public_ip</code> exactly as before:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the public IP address (to attach to load balancer)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>az network public-ip create <span class="op">-</span>g lab_rg <span class="op">-</span>n lab_lb_public_ip</span></code></pre></div>
+<h2 data-number="4.2" id="load-balancer-creation-in-portal"><span class="header-section-number">4.2</span> Load balancer creation in
+Portal</h2>
+<p>In the portal go to Azure Load Balancer, hit <em>Create</em>.</p>
+<h2 data-number="4.3" id="basics"><span class="header-section-number">4.3</span> Basics</h2>
+<p>Choose <code>lab_rg</code> Resource group.</p>
+<p>Name: <code>lab-lb</code>.</p>
+<p>Set <strong>Type</strong> to <strong>Public</strong>.</p>
+<p>Leave all other settings alone. Hit <strong>Next</strong>.</p>
+<h2 data-number="4.4" id="frontend-ip-configuration"><span class="header-section-number">4.4</span> Frontend IP configuration</h2>
+<p>On this page click <em>Add a frontend IP configuration</em>.</p>
+<p>This attaches our public IP address to the load balancer.</p>
+<p><strong>Name:</strong> <code>lab_frontend</code></p>
+<p>Drop <strong>Public IP address</strong> down to
+<code>lab_lb_public_ip</code>.</p>
+<p>Leave all other settings alone. Hit <strong>Save</strong> and then
+<strong>Next</strong>.</p>
+<h2 data-number="4.5" id="backend-pools"><span class="header-section-number">4.5</span> Backend pools</h2>
+<p>The backend pool is a group of VMs that are available to serve
+incoming requests from the load balancer.</p>
+<p>Click <em>Add a backend pool</em>.</p>
+<p><strong>Name:</strong> <code>lab-backend</code></p>
+<p><strong>Virtual network:</strong> <code>lab_vnet</code></p>
+<p><strong>Backend Pool Configuration:</strong> NIC</p>
+<p>Under <strong>IP Configurations</strong> click <em>Add</em>.</p>
+<p>Tick the 2 VMs in the list.</p>
+<p>Hit <strong>Add</strong>, then <strong>Save</strong>.</p>
+<h2 data-number="4.6" id="inbound-rules"><span class="header-section-number">4.6</span> Inbound rules</h2>
+<p>Under <strong>Load balancing rule</strong> click <em>Add a load
+balancing rule</em>.</p>
+<p><strong>Name:</strong> ssh</p>
+<p><strong>Frontend IP address:</strong> <code>lab-frontend</code></p>
+<p><strong>Backend pool:</strong> <code>lab-backend</code></p>
+<p><strong>Protocol:</strong> TCP</p>
+<p><strong>Port:</strong> 22</p>
+<p><strong>Backend port:</strong> 22</p>
+<h3 data-number="4.6.1" id="health-probe"><span class="header-section-number">4.6.1</span> Health probe</h3>
+<p>Under <strong>Health Probe</strong> click <em>Add new</em>.</p>
+<p><strong>Name:</strong> ssh</p>
+<p><strong>Protocol:</strong> TCP</p>
+<p><strong>Port:</strong> 22</p>
+<p>Leave everything else alone and hit <strong>Save</strong>.</p>
+<p>You can then go ahead and hit <strong>Review and Create</strong>,
+then <strong>Create</strong>.</p>
+<h1 data-number="5" id="usage"><span class="header-section-number">5</span> Usage</h1>
+<p>The load balancer by design should ensure that we don’t know what
+backend machine we are connecting to, but that illusion can be easily
+broken.</p>
+<h2 data-number="5.1" id="ssh-host-keys"><span class="header-section-number">5.1</span> SSH host keys</h2>
+<p>In the case of SSH we have host keys that the client verifies.</p>
+<p>Obviously if the client gets connected to a different VM, the host
+key verification will fail.</p>
+<p>The only way around this is to copy the relevant host keys so they’re
+identical. Or setup a <em>Certificate Authority</em> if you really want
+to!</p>
+<h2 data-number="5.2" id="backend-uniformity"><span class="header-section-number">5.2</span> Backend uniformity</h2>
+<p>The load balancer configuration itself only provides the means to
+distribute incoming connections among a number of backend VMs. It
+doesn’t actually ensure that the machines are in any way identical at
+all. This is the job of other tools - whether custom / cloned images,
+cloud-init or ansible playbooks.</p>
+<h1 data-number="6" id="non-cloud-applicability"><span class="header-section-number">6</span> Non-cloud applicability</h1>
+<p>Most of the ideas here apply to non-cloud environments as well.</p>
+<p>A hardware load balancer can be deployed in front of a number of
+backend machines in a pool (including VMs) to distribute the incoming
+connections among them. The configuration is very similar to that shown
+here.</p>
+<h1 data-number="7" id="reminder---delete-resources"><span class="header-section-number">7</span> Reminder - delete resources</h1>
+<p><strong>Very important</strong> that you delete resources from this
+week - with multiple VMs, public IPs and load balancer your Azure credit
+could get exhausted quickly! Delete everything when you’re finished.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>az <span class="fu">group</span> delete <span class="op">-</span>n lab_rg</span></code></pre></div>
+</body>
+</html>

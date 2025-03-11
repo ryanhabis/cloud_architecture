@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Advanced networking lab</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+body {
+font-family: sans-serif;
+background-color: rgb(245,245,245);
+}
+#TOC {
+padding: 10px;
+background-color: lightyellow;
+}
+h1.title {
+background-color: black;
+color: white;
+padding: 5px;
+font-size: 150%;
+}
+h1 {
+background-color: lightcyan;
+padding: 5px;
+font-size: 120%;
+}
+h2 {
+color: darkblue;
+font-size: 100%;
+}
+h3 {
+color: darkgreen;
+font-size: 100%;
+}
+code {
+font-weight: bold;
+font-size: 120%;
+}
+pre {
+font-size: 120%;
+padding: 0.5em;
+font-weight: bold;
+border-style: solid;
+border-width: 2px;
+border-color: rgb(100,100,100);
+background-color: rgb(245,255,245);
+}
+img[role=img] {
+max-width: 100%;
+}
+
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Advanced networking lab</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#resource-group-creation" id="toc-resource-group-creation"><span class="toc-section-number">1</span> Resource group creation</a>
+<ul>
+<li><a href="#delete-if-existing" id="toc-delete-if-existing"><span class="toc-section-number">1.1</span> Delete if existing</a></li>
+<li><a href="#creation" id="toc-creation"><span class="toc-section-number">1.2</span> Creation</a></li>
+</ul></li>
+<li><a href="#scenario" id="toc-scenario"><span class="toc-section-number">2</span> Scenario</a>
+<ul>
+<li><a href="#vnet-creation" id="toc-vnet-creation"><span class="toc-section-number">2.1</span> VNet creation</a></li>
+<li><a href="#subnet-creation" id="toc-subnet-creation"><span class="toc-section-number">2.2</span> Subnet creation</a></li>
+</ul></li>
+<li><a href="#network-security-group" id="toc-network-security-group"><span class="toc-section-number">3</span> Network security group</a>
+<ul>
+<li><a href="#creation-1" id="toc-creation-1"><span class="toc-section-number">3.1</span> Creation</a></li>
+<li><a href="#listing-the-rules" id="toc-listing-the-rules"><span class="toc-section-number">3.2</span> Listing the rules</a></li>
+<li><a href="#adding-rule" id="toc-adding-rule"><span class="toc-section-number">3.3</span> Adding rule</a></li>
+</ul></li>
+<li><a href="#public-vm" id="toc-public-vm"><span class="toc-section-number">4</span> Public VM</a>
+<ul>
+<li><a href="#vm-image-list" id="toc-vm-image-list"><span class="toc-section-number">4.1</span> VM image list</a></li>
+<li><a href="#create-the-public-ipv4-address" id="toc-create-the-public-ipv4-address"><span class="toc-section-number">4.2</span> Create the public IPv4
+address</a></li>
+<li><a href="#create-the-nic" id="toc-create-the-nic"><span class="toc-section-number">4.3</span> Create the NIC</a></li>
+<li><a href="#create-the-vm" id="toc-create-the-vm"><span class="toc-section-number">4.4</span> Create the VM</a></li>
+<li><a href="#ssh-connection" id="toc-ssh-connection"><span class="toc-section-number">4.5</span> SSH connection</a></li>
+</ul></li>
+<li><a href="#private-vm-1" id="toc-private-vm-1"><span class="toc-section-number">5</span> Private VM 1</a>
+<ul>
+<li><a href="#nsg-creation" id="toc-nsg-creation"><span class="toc-section-number">5.1</span> NSG Creation</a></li>
+<li><a href="#nsg-rule" id="toc-nsg-rule"><span class="toc-section-number">5.2</span> NSG Rule</a></li>
+<li><a href="#private-vm-creation" id="toc-private-vm-creation"><span class="toc-section-number">5.3</span> Private VM creation</a></li>
+</ul></li>
+<li><a href="#application-ssh-gateway" id="toc-application-ssh-gateway"><span class="toc-section-number">6</span> Application: SSH Gateway</a>
+<ul>
+<li><a href="#direct-ssh-to-private-vm-1" id="toc-direct-ssh-to-private-vm-1"><span class="toc-section-number">6.1</span> Direct SSH to private VM
+1</a></li>
+<li><a href="#using-keys" id="toc-using-keys"><span class="toc-section-number">6.2</span> Using keys</a></li>
+</ul></li>
+<li><a href="#resource-group-deletion" id="toc-resource-group-deletion"><span class="toc-section-number">7</span> Resource group deletion</a></li>
+<li><a href="#additional-commands-for-reference" id="toc-additional-commands-for-reference"><span class="toc-section-number">8</span> Additional commands for
+reference</a>
+<ul>
+<li><a href="#associating-the-nsg" id="toc-associating-the-nsg"><span class="toc-section-number">8.0.1</span> Associating the NSG</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 data-number="1" id="resource-group-creation"><span class="header-section-number">1</span> Resource group creation</h1>
+<p>Today’s lab will be done in <code>lab_rg</code> as usual.</p>
+<h2 data-number="1.1" id="delete-if-existing"><span class="header-section-number">1.1</span> Delete if existing</h2>
+<p>If you haven’t deleted <code>lab_rg</code> and its resources from
+last week you should do it now using:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>az <span class="fu">group</span> delete <span class="op">-</span>n lab_rg</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># may need to confirm with y</span></span></code></pre></div>
+<h2 data-number="1.2" id="creation"><span class="header-section-number">1.2</span> Creation</h2>
+<p>As usual we’ll create <code>lab_rg</code> in <code>westeurope</code>
+using:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>az <span class="fu">group</span> create <span class="op">-</span>n lab_rg <span class="op">-</span>l westeurope</span></code></pre></div>
+<h1 data-number="2" id="scenario"><span class="header-section-number">2</span> Scenario</h1>
+<p>Today we’re going to consider a more advanced vnet configuration than
+we’ve seen to date:</p>
+<p><img role="img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDEyLjIuMSAoMjAyNDEyMDYuMjM1MykKIC0tPgo8IS0tIFRpdGxlOiBHIFBhZ2VzOiAxIC0tPgo8c3ZnIHdpZHRoPSI0MTlwdCIgaGVpZ2h0PSIyODFwdCIKIHZpZXdCb3g9IjAuMDAgMC4wMCA0MTkuMDAgMjgxLjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPGcgaWQ9ImdyYXBoMCIgY2xhc3M9ImdyYXBoIiB0cmFuc2Zvcm09InNjYWxlKDEgMSkgcm90YXRlKDApIHRyYW5zbGF0ZSg0IDI3NykiPgo8dGl0bGU+RzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiIHBvaW50cz0iLTQsNCAtNCwtMjc3IDQxNSwtMjc3IDQxNSw0IC00LDQiLz4KPGcgaWQ9ImNsdXN0MSIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl92bmV0PC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI4LC04IDgsLTI2NSA0MDMsLTI2NSA0MDMsLTggOCwtOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIyMDUuNSIgeT0iLTI0Ny43IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYiYjNDU7dm5ldCAxMC4wLjAuMC8xNjwvdGV4dD4KPC9nPgo8ZyBpZD0iY2x1c3QyIiBjbGFzcz0iY2x1c3RlciI+Cjx0aXRsZT5jbHVzdGVyX3B1YmxpY19zdWJuZXQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjE2LC0xNiAxNiwtOTMgMjU2LC05MyAyNTYsLTE2IDE2LC0xNiIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxMzYiIHk9Ii03NS43IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPnB1YmxpY19zdWJuZXQgMTAuMC4xLjAvMjQ8L3RleHQ+CjwvZz4KPGcgaWQ9ImNsdXN0MyIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9wcml2YXRlX3N1Ym5ldDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMTUyLC0xMDEgMTUyLC0yMzIgMzk1LC0yMzIgMzk1LC0xMDEgMTUyLC0xMDEiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjczLjUiIHk9Ii0yMTQuNyIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5wcml2YXRlX3N1Ym5ldCAxMC4wLjIuMC8yNDwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCAtLT4KPGcgaWQ9Im5vZGUxIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5jbGllbnQ8L3RpdGxlPgo8ZWxsaXBzZSBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBjeD0iNzQiIGN5PSItMTE5IiByeD0iMzMuNDQiIHJ5PSIxOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSI3NCIgeT0iLTExMy45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5DbGllbnQ8L3RleHQ+CjwvZz4KPCEtLSBsb2dpbiAtLT4KPGcgaWQ9Im5vZGUyIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sb2dpbjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Ymx1ZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyNDgsLTYwIDE3NS43NSwtNjAgMTc1Ljc1LC0yNCAyNDgsLTI0IDI0OCwtNjAiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjExLjg4IiB5PSItMzYuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+cHVibGljJiM0NTt2bTwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCYjNDU7Jmd0O2xvZ2luIC0tPgo8ZyBpZD0iZWRnZTQiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmNsaWVudCYjNDU7Jmd0O2xvZ2luPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTEwMS4yNywtMTA4LjAzQzEwOC43MiwtMTA0LjcgMTE2Ljc3LC0xMDAuODkgMTI0LC05NyAxNDEuMDMsLTg3Ljg1IDE1OS4xOSwtNzYuNiAxNzQuNDksLTY2LjY2Ii8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjE3Ni4zOCwtNjkuNjEgMTgyLjgyLC02MS4xOSAxNzIuNTQsLTYzLjc2IDE3Ni4zOCwtNjkuNjEiLz4KPC9nPgo8IS0tIHdvcmtlcjEgLS0+CjxnIGlkPSJub2RlNCIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+d29ya2VyMTwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Ymx1ZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzODcsLTE0NSAyOTkuNzUsLTE0NSAyOTkuNzUsLTEwOSAzODcsLTEwOSAzODcsLTE0NSIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNDMuMzgiIHk9Ii0xMjEuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+cHJpdmF0ZSYjNDU7dm0mIzQ1OzE8L3RleHQ+CjwvZz4KPCEtLSBsb2dpbiYjNDU7Jmd0O3dvcmtlcjEgLS0+CjxnIGlkPSJlZGdlNSIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bG9naW4mIzQ1OyZndDt3b3JrZXIxPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTI0MC45NywtNjAuNDRDMjU5LjY0LC03Mi43IDI4NC4zNywtODguOTMgMzA0LjczLC0xMDIuMjkiLz4KPHBvbHlnb24gZmlsbD0iYmxhY2siIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMzAyLjc4LC0xMDUuMiAzMTMuMDYsLTEwNy43NiAzMDYuNjMsLTk5LjM1IDMwMi43OCwtMTA1LjIiLz4KPC9nPgo8IS0tIHdvcmtlcjIgLS0+CjxnIGlkPSJub2RlNSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+d29ya2VyMjwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0Ymx1ZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIzODcsLTE5OSAyOTkuNzUsLTE5OSAyOTkuNzUsLTE2MyAzODcsLTE2MyAzODcsLTE5OSIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNDMuMzgiIHk9Ii0xNzUuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+cHJpdmF0ZSYjNDU7dm0mIzQ1OzI8L3RleHQ+CjwvZz4KPCEtLSBsb2dpbiYjNDU7Jmd0O3dvcmtlcjIgLS0+CjxnIGlkPSJlZGdlNiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bG9naW4mIzQ1OyZndDt3b3JrZXIyPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTIzMS4xOSwtNjAuMDlDMjQxLjI5LC03MC40NyAyNTMuNzcsLTg0IDI2My43NSwtOTcgMjgyLC0xMjAuNzYgMjc4LjU4LC0xMzIuOCAyOTkuNzUsLTE1NCAzMDAuMjMsLTE1NC40OCAzMDAuNzMsLTE1NC45NiAzMDEuMjMsLTE1NS40NCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyOTguOTEsLTE1OC4wNiAzMDguODQsLTE2MS43NCAzMDMuMzcsLTE1Mi42NyAyOTguOTEsLTE1OC4wNiIvPgo8L2c+CjwhLS0gcHVibGljX3ZtX25zZyAtLT4KPGcgaWQ9Im5vZGUzIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5wdWJsaWNfdm1fbnNnPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRwaW5rIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjEyNCwtNjAgMjQsLTYwIDI0LC01NiAyMCwtNTYgMjAsLTUyIDI0LC01MiAyNCwtMzIgMjAsLTMyIDIwLC0yOCAyNCwtMjggMjQsLTI0IDEyNCwtMjQgMTI0LC02MCIvPgo8cG9seWxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyNCwtNTYgMjgsLTU2IDI4LC01MiAyNCwtNTIiLz4KPHBvbHlsaW5lIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjQsLTMyIDI4LC0zMiAyOCwtMjggMjQsLTI4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9Ijc0IiB5PSItMzYuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+cHVibGljX3ZtX25zZzwvdGV4dD4KPC9nPgo8IS0tIHB1YmxpY192bV9uc2cmIzQ1OyZndDtsb2dpbiAtLT4KPGcgaWQ9ImVkZ2UxIiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5wdWJsaWNfdm1fbnNnJiM0NTsmZ3Q7bG9naW48L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImxpZ2h0cGluayIgc3Ryb2tlLWRhc2hhcnJheT0iNSwyIiBkPSJNMTI0LjQ0LC00MkMxMzcuMzQsLTQyIDE1MS4yLC00MiAxNjMuOTYsLTQyIi8+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0cGluayIgc3Ryb2tlPSJsaWdodHBpbmsiIHBvaW50cz0iMTYzLjgsLTQ1LjUgMTczLjgsLTQyIDE2My44LC0zOC41IDE2My44LC00NS41Ii8+CjwvZz4KPCEtLSBwcml2YXRlX3ZtX25zZyAtLT4KPGcgaWQ9Im5vZGU2IiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5wcml2YXRlX3ZtX25zZzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0cGluayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyNjMuNzUsLTE3MiAxNjAsLTE3MiAxNjAsLTE2OCAxNTYsLTE2OCAxNTYsLTE2NCAxNjAsLTE2NCAxNjAsLTE0NCAxNTYsLTE0NCAxNTYsLTE0MCAxNjAsLTE0MCAxNjAsLTEzNiAyNjMuNzUsLTEzNiAyNjMuNzUsLTE3MiIvPgo8cG9seWxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxNjAsLTE2OCAxNjQsLTE2OCAxNjQsLTE2NCAxNjAsLTE2NCIvPgo8cG9seWxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxNjAsLTE0NCAxNjQsLTE0NCAxNjQsLTE0MCAxNjAsLTE0MCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIyMTEuODgiIHk9Ii0xNDguOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+cHJpdmF0ZV92bV9uc2c8L3RleHQ+CjwvZz4KPCEtLSBwcml2YXRlX3ZtX25zZyYjNDU7Jmd0O3dvcmtlcjEgLS0+CjxnIGlkPSJlZGdlMiIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+cHJpdmF0ZV92bV9uc2cmIzQ1OyZndDt3b3JrZXIxPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJsaWdodHBpbmsiIHN0cm9rZS1kYXNoYXJyYXk9IjUsMiIgZD0iTTI2NC4wNiwtMTQzLjMzQzI3Mi4wMywtMTQxLjY3IDI4MC4zLC0xMzkuOTQgMjg4LjM0LC0xMzguMjciLz4KPHBvbHlnb24gZmlsbD0ibGlnaHRwaW5rIiBzdHJva2U9ImxpZ2h0cGluayIgcG9pbnRzPSIyODguOTQsLTE0MS43MiAyOTguMDEsLTEzNi4yNSAyODcuNTEsLTEzNC44NiAyODguOTQsLTE0MS43MiIvPgo8L2c+CjwhLS0gcHJpdmF0ZV92bV9uc2cmIzQ1OyZndDt3b3JrZXIyIC0tPgo8ZyBpZD0iZWRnZTMiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPnByaXZhdGVfdm1fbnNnJiM0NTsmZ3Q7d29ya2VyMjwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0ibGlnaHRwaW5rIiBzdHJva2UtZGFzaGFycmF5PSI1LDIiIGQ9Ik0yNjQuMDYsLTE2NC42N0MyNzIuMDMsLTE2Ni4zMyAyODAuMywtMTY4LjA2IDI4OC4zNCwtMTY5LjczIi8+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0cGluayIgc3Ryb2tlPSJsaWdodHBpbmsiIHBvaW50cz0iMjg3LjUxLC0xNzMuMTQgMjk4LjAxLC0xNzEuNzUgMjg4Ljk0LC0xNjYuMjggMjg3LjUxLC0xNzMuMTQiLz4KPC9nPgo8L2c+Cjwvc3ZnPgo=" /></p>
+<p>Our network has:</p>
+<ul>
+<li>A <strong>public subnet</strong> with range 10.0.1.0/24 intended for
+controlled access from the public internet.</li>
+<li>A <strong>private subnet</strong> with range 10.0.2.0/24 intended
+for controlled access only from the public subnet, and not directly from
+the wider public internet.</li>
+</ul>
+<p><strong>This is a very useful pattern for network design, aside from
+cloud environments.</strong></p>
+<h2 data-number="2.1" id="vnet-creation"><span class="header-section-number">2.1</span> VNet creation</h2>
+<p>Start by creating the VNet with the 10.0.0.0/16 prefix located in
+<code>westeurope</code>.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>az network vnet create <span class="op">-</span>n lab_vnet <span class="op">-</span>g lab_rg <span class="op">-</span>l westeurope <span class="op">--</span>address-prefix <span class="dv">10.0</span><span class="op">.</span><span class="dv">0.0</span><span class="op">/</span><span class="dv">16</span></span></code></pre></div>
+<p>Unlike when we create a VNet using the portal, we don’t get a default
+subnet included.</p>
+<h2 data-number="2.2" id="subnet-creation"><span class="header-section-number">2.2</span> Subnet creation</h2>
+<p>We need now to create two subnets, <code>public-subnet</code> and
+<code>private-subnet</code>. Each needs the VNet name to be associated
+correctly, and the non-overlapping range of IPv4 addresses. <em>Azure
+will refuse to create overlapping subnet ranges so don’t worry about
+that!</em></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># for the public subnet</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>taz network vnet subnet create <span class="op">-</span>n public_subnet <span class="op">-</span>g lab_rg <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>address-prefix <span class="dv">10.0</span><span class="op">.</span><span class="dv">1.0</span><span class="op">/</span><span class="dv">24</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># same for the private subnet</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>az network vnet subnet create <span class="op">-</span>n private_subnet <span class="op">-</span>g lab_rg <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>address-prefix <span class="dv">10.0</span><span class="op">.</span><span class="dv">2.0</span><span class="op">/</span><span class="dv">24</span></span></code></pre></div>
+<h1 data-number="3" id="network-security-group"><span class="header-section-number">3</span> Network security group</h1>
+<p>Last year we saw that AWS has security groups that implement a
+network-level firewall in front of EC2 instances. Separately Network
+ACLs control traffic across subnets in a VPC.</p>
+<p>Azure blends both concepts together, with rules expressed in Network
+Security Groups that are attached to subnets and/or VMs. The same NSG
+can technically be attached to a subnet and one or more VMs but
+generally the rules implemented will differ sufficiently that we won’t
+want to do that. In our example we’re going to use NSGs attached to VMs
+only.</p>
+<p>NSGs can be modified after they’ve been created and attached to
+subnets and/or VMs, so it is relatively easy to alter rules once they’ve
+been setup.</p>
+<h2 data-number="3.1" id="creation-1"><span class="header-section-number">3.1</span> Creation</h2>
+<p>Let’s first create NSGs for the public network VM(s).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>az network nsg create <span class="op">-</span>g lab_rg <span class="op">-</span>n public_vm_nsg</span></code></pre></div>
+<h2 data-number="3.2" id="listing-the-rules"><span class="header-section-number">3.2</span> Listing the rules</h2>
+<p>We can at any time list the rules in the NSG using:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>az network nsg rule list <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name public_vm_nsg</span></code></pre></div>
+<p>This will appear different to what’s presented on the Portal, because
+(for some inexplicable reason) it lacks the default rules. We can
+include them by passing the <code>--include-default</code> switch:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>az network nsg rule list <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name public_vm_nsg <span class="op">--</span>include-default</span></code></pre></div>
+<h2 data-number="3.3" id="adding-rule"><span class="header-section-number">3.3</span> Adding rule</h2>
+<p>We’ll now add a rule to our network security group to permit inbound
+SSH from anywhere.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>az network nsg rule create <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name public_vm_nsg <span class="op">--</span>name AllowPublicSSH <span class="op">--</span>protocol tcp <span class="op">--</span>direction inbound <span class="op">--</span>source-address-prefix <span class="st">&#39;*&#39;</span> <span class="op">--</span>destination-address-prefix <span class="st">&#39;*&#39;</span> <span class="op">--</span>destination-port-range <span class="dv">22</span> <span class="op">--</span>access allow <span class="op">--</span>priority <span class="dv">200</span></span></code></pre></div>
+<h1 data-number="4" id="public-vm"><span class="header-section-number">4</span> Public VM</h1>
+<p>The public VM will be created here. In contrast to what we’ve done so
+far we’ll use the Azure CLI to create it.</p>
+<h2 data-number="4.1" id="vm-image-list"><span class="header-section-number">4.1</span> VM image list</h2>
+<p>To obtain a list of the available VM <em>images</em></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>az vm image list <span class="op">-</span>p Canonical <span class="op">--</span>all <span class="op">-</span>o table </span></code></pre></div>
+<p>We’re going to use the
+<code>Canonical:ubuntu-24_04-lts:server:latest</code> image.</p>
+<h2 data-number="4.2" id="create-the-public-ipv4-address"><span class="header-section-number">4.2</span> Create the public IPv4
+address</h2>
+<p>So far we’ve always created a public IP address automatically for our
+VMs so that we can connect directly to them from the outside. The public
+IP to private IP NAT is done by Azure’s VNet, so the public IP address
+does not appear on the VM itself. Here we will create the public IP
+address explicitly.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>az network public-ip create <span class="op">-</span>g lab_rg <span class="op">-</span>n PublicVMIP</span></code></pre></div>
+<h2 data-number="4.3" id="create-the-nic"><span class="header-section-number">4.3</span> Create the NIC</h2>
+<p>The Network Interface Card (NIC) is technically a distinct component
+from the VM. Essentially it associates a virtual network interface in
+the VMs operating system to your subnet, hence the name.</p>
+<p>NICs are normally created automatically when creating a VM. Here we
+will create it explicitly so that we can associate the NSG that we
+created earlier.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>az network nic create <span class="op">-</span>g lab_rg <span class="op">--</span>name PublicNIC <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>subnet public_subnet <span class="op">--</span>network-security-group public_vm_nsg <span class="op">--</span>public-ip-address PublicVMIP</span></code></pre></div>
+<h2 data-number="4.4" id="create-the-vm"><span class="header-section-number">4.4</span> Create the VM</h2>
+<p>We now have enough information to create the VM:</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>az vm create <span class="op">-</span>g lab_rg <span class="op">-</span>n public-vm <span class="op">--</span>location westeurope <span class="op">--</span>nics PublicNIC  <span class="op">--</span>image <span class="st">&#39;Canonical:ubuntu-24_04-lts:server:latest&#39;</span> <span class="op">--</span>admin-username developer <span class="op">--</span>admin-password 1Password  <span class="op">--</span>size Standard_B1s</span></code></pre></div>
+<p>The public and private IP addresses will appear in the output.</p>
+<h2 data-number="4.5" id="ssh-connection"><span class="header-section-number">4.5</span> SSH connection</h2>
+<p>We can now connect over SSH as we’re familiar with:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ssh developer@public-ip-address-here</span></code></pre></div>
+<p>If you notice issues with SSH authentication you may need to try</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ssh developer@public-ip-address-here <span class="op">-</span>i <span class="op">~/.</span><span class="fu">ssh</span><span class="op">/</span>id_rsa</span></code></pre></div>
+<h1 data-number="5" id="private-vm-1"><span class="header-section-number">5</span> Private VM 1</h1>
+<p>Now, let’s repeat the process for the private network security group
+following the same sequence as the public NSG:</p>
+<h2 data-number="5.1" id="nsg-creation"><span class="header-section-number">5.1</span> NSG Creation</h2>
+<div class="sourceCode" id="cb15"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the NSG</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>az network nsg create <span class="op">-</span>g lab_rg <span class="op">-</span>n private_vm_nsg</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># list out the rules (if needed, include defaults)</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>az network nsg rule list <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name private_vm_nsg <span class="op">--</span>include-default</span></code></pre></div>
+<h2 data-number="5.2" id="nsg-rule"><span class="header-section-number">5.2</span> NSG Rule</h2>
+<p>We will permit (in the first instance) SSH traffic from the
+<em>public subnet</em> to the private subnet’s VMs. We can do this with
+a very minor change to the SSH rule for the public subnet:</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>az network nsg rule create <span class="op">-</span>g lab_rg <span class="op">--</span>nsg-name private_vm_nsg <span class="op">--</span>name AllowSSHFromPublicSubnet <span class="op">--</span>protocol tcp <span class="op">--</span>direction inbound <span class="op">--</span>source-address-prefix <span class="st">&#39;10.0.1.0/24&#39;</span> <span class="op">--</span>destination-address-prefix <span class="st">&#39;*&#39;</span> <span class="op">--</span>destination-port-range <span class="dv">22</span> <span class="op">--</span>access allow <span class="op">--</span>priority <span class="dv">200</span></span></code></pre></div>
+<h2 data-number="5.3" id="private-vm-creation"><span class="header-section-number">5.3</span> Private VM creation</h2>
+<p>The private VM is pretty similar to the public VM, except we don’t
+have a public IP address.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Private NIC</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>az network nic create <span class="op">-</span>g lab_rg <span class="op">--</span>name PrivateNIC1 <span class="op">--</span>vnet-name lab_vnet <span class="op">--</span>subnet private_subnet <span class="op">--</span>network-security-group private_vm_nsg</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create VM</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>az vm create <span class="op">-</span>g lab_rg <span class="op">-</span>n private-vm-1 <span class="op">--</span>location westeurope <span class="op">--</span>nics PrivateNIC1  <span class="op">--</span>image <span class="st">&#39;Canonical:ubuntu-24_04-lts:server:latest&#39;</span> <span class="op">--</span>admin-username developer <span class="op">--</span>admin-password 1Password  <span class="op">--</span>size Standard_B1s</span></code></pre></div>
+<p>When the creation command returns, note that there is no Public IP
+address shown.</p>
+<h1 data-number="6" id="application-ssh-gateway"><span class="header-section-number">6</span> Application: SSH Gateway</h1>
+<p>A very common situation is where we have 1 externally facing SSH
+server that is then used as a proxy to connect to other hosts that are
+not directly accessible. This setup is often called a bastion host, jump
+host or jump box.</p>
+<h2 data-number="6.1" id="direct-ssh-to-private-vm-1"><span class="header-section-number">6.1</span> Direct SSH to private VM 1</h2>
+<p>We can directly SSH to the private VM via the public VM using the
+<code>-J</code> switch of the SSH command.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ssh <span class="op">-</span>J developer@public-ip-here developer@private-ip-here</span></code></pre></div>
+<h2 data-number="6.2" id="using-keys"><span class="header-section-number">6.2</span> Using keys</h2>
+<p>The SSH bastion host or jump box is often employed with SSH keys.</p>
+<h1 data-number="7" id="resource-group-deletion"><span class="header-section-number">7</span> Resource group deletion</h1>
+<p>When you’ve finished today’s lab make sure to delete your
+<code>lab_rg</code> resource group (including its contents!)</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>az <span class="fu">group</span> delete <span class="op">-</span>n lab_rg</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># may need to confirm with y</span></span></code></pre></div>
+<p>Don’t close the shell session until the deletion has completed!</p>
+<h1 data-number="8" id="additional-commands-for-reference"><span class="header-section-number">8</span> Additional commands for
+reference</h1>
+<h3 data-number="8.0.1" id="associating-the-nsg"><span class="header-section-number">8.0.1</span> Associating the NSG</h3>
+<p>Then we can associate it to the relevant subnet (where we need to
+repeat a few parameters like VNet name and resource group name):</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>az network vnet subnet update <span class="op">-</span>n private_subnet <span class="op">--</span>network-security-group private_subnet_nsg <span class="op">-</span>g lab_rg <span class="op">--</span>vnet-name lab_vnet</span></code></pre></div>
+</body>
+</html>
