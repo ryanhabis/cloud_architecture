@@ -84,7 +84,7 @@ Each needs the VNet name to be associated correctly, and the non-overlapping ran
 
 ```powershell
 # for the public subnet
-taz network vnet subnet create -n public_subnet -g lab_rg --vnet-name lab_vnet --address-prefix 10.0.1.0/24
+az network vnet subnet create -n public_subnet -g lab_rg --vnet-name lab_vnet --address-prefix 10.0.1.0/24
 
 # same for the private subnet
 az network vnet subnet create -n private_subnet -g lab_rg --vnet-name lab_vnet --address-prefix 10.0.2.0/24
