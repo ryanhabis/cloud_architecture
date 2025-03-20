@@ -417,7 +417,6 @@ Test run the JAR file in the `target` subdirectory.
 
 ## Runner installation
 
-
 These steps will set up the runner on your own XOA machine.
 
 1. Use SFTP to copy `./runner_install.sh` to your VM.
@@ -503,34 +502,5 @@ Today's lab is a very basic introduction:
 
 - We could now do some deployment tasks from this!
 
-
-# Alternative / optional: self-setup
-
-
-## Copy project to desktop
-
-First let's copy the app out of the lab git repository to your Desktop.
-To do this run the following PowerShell command
-
-```powershell
-Copy-Item -Path "TrainTimes" -Destination "~/Desktop" -Recurse
-```
-
-
-## Initialise the git repo
-
-First let's initialise the Git repository, add all files and commit them.
-To do this we'll run:
-
-```powershell
-# initalise the repository
-git init -b main
-
-# add all files (except .gitignore'd files)
-git add .
-
-# commit
-git commit -m 'initial commit'
-```
 
 

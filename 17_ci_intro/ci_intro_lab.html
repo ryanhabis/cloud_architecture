@@ -169,14 +169,28 @@ Students</a></li>
 </ul></li>
 <li><a href="#azure-infrastructure" id="toc-azure-infrastructure"><span class="toc-section-number">5</span> Azure infrastructure</a>
 <ul>
-<li><a href="#resource-group" id="toc-resource-group"><span class="toc-section-number">5.1</span> Resource group</a></li>
+<li><a href="#infrastructure-setup" id="toc-infrastructure-setup"><span class="toc-section-number">5.1</span> Infrastructure setup</a></li>
 </ul></li>
-<li><a href="#issues" id="toc-issues"><span class="toc-section-number">6</span> Issues</a></li>
-<li><a href="#alternative-self-setup" id="toc-alternative-self-setup"><span class="toc-section-number">7</span> Alternative: self-setup</a>
+<li><a href="#testing-build-on-build-vm" id="toc-testing-build-on-build-vm"><span class="toc-section-number">6</span> Testing build on Build VM</a>
 <ul>
-<li><a href="#copy-project-to-desktop" id="toc-copy-project-to-desktop"><span class="toc-section-number">7.1</span> Copy project to desktop</a></li>
-<li><a href="#initialise-the-git-repo" id="toc-initialise-the-git-repo"><span class="toc-section-number">7.2</span> Initialise the git repo</a></li>
+<li><a href="#cloning-repository" id="toc-cloning-repository"><span class="toc-section-number">6.0.1</span> Cloning repository</a></li>
+<li><a href="#checking-for-required-tools" id="toc-checking-for-required-tools"><span class="toc-section-number">6.0.2</span> Checking for required
+tools</a></li>
+<li><a href="#running-the-build" id="toc-running-the-build"><span class="toc-section-number">6.0.3</span> Running the build</a></li>
+<li><a href="#running-the-jar-file" id="toc-running-the-jar-file"><span class="toc-section-number">6.0.4</span> Running the JAR file</a></li>
 </ul></li>
+<li><a href="#gitlab-runner-setup" id="toc-gitlab-runner-setup"><span class="toc-section-number">7</span> GitLab Runner Setup</a>
+<ul>
+<li><a href="#runner-installation" id="toc-runner-installation"><span class="toc-section-number">7.1</span> Runner installation</a></li>
+<li><a href="#linking-the-runner-to-the-project" id="toc-linking-the-runner-to-the-project"><span class="toc-section-number">7.2</span> Linking the runner to the
+project</a></li>
+<li><a href="#manually-running-the-pipeline" id="toc-manually-running-the-pipeline"><span class="toc-section-number">7.3</span> Manually running the
+pipeline</a></li>
+<li><a href="#automatically-running-the-pipeline" id="toc-automatically-running-the-pipeline"><span class="toc-section-number">7.4</span> Automatically running the
+pipeline</a></li>
+<li><a href="#end" id="toc-end"><span class="toc-section-number">7.5</span> End</a></li>
+</ul></li>
+<li><a href="#issues" id="toc-issues"><span class="toc-section-number">8</span> Issues</a></li>
 </ul>
 </nav>
 <p>In today’s lab we’ll start looking at how GitLab CI can build a basic
@@ -452,10 +466,107 @@ other.</em></p>
 very basic project does very little!</p>
 <h1 data-number="5" id="azure-infrastructure"><span class="header-section-number">5</span> Azure infrastructure</h1>
 <p><img role="img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDEyLjIuMSAoMjAyNDEyMDYuMjM1MykKIC0tPgo8IS0tIFRpdGxlOiBHIFBhZ2VzOiAxIC0tPgo8c3ZnIHdpZHRoPSI0NDZwdCIgaGVpZ2h0PSIyMjdwdCIKIHZpZXdCb3g9IjAuMDAgMC4wMCA0NDUuNzUgMjI3LjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPGcgaWQ9ImdyYXBoMCIgY2xhc3M9ImdyYXBoIiB0cmFuc2Zvcm09InNjYWxlKDEgMSkgcm90YXRlKDApIHRyYW5zbGF0ZSg0IDIyMykiPgo8dGl0bGU+RzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiIHBvaW50cz0iLTQsNCAtNCwtMjIzIDQ0MS43NSwtMjIzIDQ0MS43NSw0IC00LDQiLz4KPGcgaWQ9ImNsdXN0MSIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfcmc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijc0LC04IDc0LC0yMTEgNDI5Ljc1LC0yMTEgNDI5Ljc1LC04IDc0LC04Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI1MS44OCIgeT0iLTE5My43IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9yZyAod2VzdGV1cm9wZSk8L3RleHQ+CjwvZz4KPGcgaWQ9ImNsdXN0MiIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfdm5ldDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iODIsLTE2IDgyLC0xMzQgNDIxLjc1LC0xMzQgNDIxLjc1LC0xNiA4MiwtMTYiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjUxLjg4IiB5PSItMjMuMiIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfdm5ldCAxMC4wLjAuMC8xNjwvdGV4dD4KPC9nPgo8ZyBpZD0iY2x1c3QzIiBjbGFzcz0iY2x1c3RlciI+Cjx0aXRsZT5jbHVzdGVyX2xhYl9zdWJuZXQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjIyMS43NSwtNDkgMjIxLjc1LC0xMjYgNDEzLjc1LC0xMjYgNDEzLjc1LC00OSAyMjEuNzUsLTQ5Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjMxNy43NSIgeT0iLTU2LjIiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3N1Ym5ldCAxMC4wLjEuMC8yNDwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCAtLT4KPGcgaWQ9Im5vZGUxIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5jbGllbnQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNTQsLTExOCAwLC0xMTggMCwtODIgNTQsLTgyIDU0LC0xMTgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjciIHk9Ii05NC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5DbGllbnQ8L3RleHQ+CjwvZz4KPCEtLSBsYWJfcHVibGljX2lwXzEgLS0+CjxnIGlkPSJub2RlNCIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX3B1YmxpY19pcF8xPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmVlbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxOTMuNzUsLTExOCA5MCwtMTE4IDkwLC04MiAxOTMuNzUsLTgyIDE5My43NSwtMTE4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE0MS44OCIgeT0iLTk0Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9wdWJsaWNfaXBfMTwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCYjNDU7Jmd0O2xhYl9wdWJsaWNfaXBfMSAtLT4KPGcgaWQ9ImVkZ2U0IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5jbGllbnQmIzQ1OyZndDtsYWJfcHVibGljX2lwXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNNTQuNDYsLTEwMEM2MS43MiwtMTAwIDY5LjkxLC0xMDAgNzguMjgsLTEwMCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI3OC4yMywtMTAzLjUgODguMjMsLTEwMCA3OC4yMywtOTYuNSA3OC4yMywtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl92bV8xIC0tPgo8ZyBpZD0ibm9kZTIiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl92bV8xPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmV5IiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjQwNS43NSwtMTE4IDMzNSwtMTE4IDMzNSwtODIgNDA1Ljc1LC04MiA0MDUuNzUsLTExOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNzAuMzgiIHk9Ii05NC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfdm1fMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uaWNfMSAtLT4KPGcgaWQ9Im5vZGUzIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfbmljXzE8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGN5YW4iIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjk5LC0xMTggMjI5Ljc1LC0xMTggMjI5Ljc1LC04MiAyOTksLTgyIDI5OSwtMTE4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI2NC4zOCIgeT0iLTk0Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9uaWNfMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xIC0tPgo8ZyBpZD0iZWRnZTIiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTI5OS40MywtMTAwQzMwNi45OSwtMTAwIDMxNS4xMywtMTAwIDMyMy4wOSwtMTAwIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjMyMy4wMiwtMTAzLjUgMzMzLjAyLC0xMDAgMzIzLjAyLC05Ni41IDMyMy4wMiwtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMSYjNDU7Jmd0O2xhYl9uaWNfMSAtLT4KPGcgaWQ9ImVkZ2UzIiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzEmIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMTkzLjk4LC0xMDBDMjAxLjksLTEwMCAyMTAuMDQsLTEwMCAyMTcuODMsLTEwMCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMTcuOCwtMTAzLjUgMjI3LjgsLTEwMCAyMTcuOCwtOTYuNSAyMTcuOCwtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl9uc2cgLS0+CjxnIGlkPSJub2RlNSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX25zZzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0cGluayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxNzAuODgsLTE3OCAxMTIuODgsLTE3OCAxMTIuODgsLTE0MiAxNzAuODgsLTE0MiAxNzAuODgsLTE3OCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxNDEuODgiIHk9Ii0xNTQuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX25zZzwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uc2cmIzQ1OyZndDtsYWJfbmljXzEgLS0+CjxnIGlkPSJlZGdlMSIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bGFiX25zZyYjNDU7Jmd0O2xhYl9uaWNfMTwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0xNzEuMzQsLTE0OC4yNEMxNzguNywtMTQ1LjA1IDE4Ni41NywtMTQxLjUgMTkzLjc1LC0xMzggMjAyLjc0LC0xMzMuNjEgMjEyLjI0LC0xMjguNjYgMjIxLjIzLC0xMjMuOCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMjIuNjgsLTEyNyAyMjkuNzgsLTExOS4xMyAyMTkuMzMsLTEyMC44NiAyMjIuNjgsLTEyNyIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" /></p>
-<h2 data-number="5.1" id="resource-group"><span class="header-section-number">5.1</span> Resource group</h2>
-<p>Create <code>lab_rg</code> in <code>westeurope</code> using the
-CLI.</p>
-<h1 data-number="6" id="issues"><span class="header-section-number">6</span> Issues</h1>
+<h2 data-number="5.1" id="infrastructure-setup"><span class="header-section-number">5.1</span> Infrastructure setup</h2>
+<p>You’re already familiar with the infrastructure needed, so let’s use
+a PowerShell script <code>./azure_build_setup.ps1</code> to create our
+Azure environment.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">./</span>azure_build_setup<span class="op">.</span><span class="fu">ps1</span></span></code></pre></div>
+<h1 data-number="6" id="testing-build-on-build-vm"><span class="header-section-number">6</span> Testing build on Build VM</h1>
+<p>Login to the build VM over SSH.</p>
+<h3 data-number="6.0.1" id="cloning-repository"><span class="header-section-number">6.0.1</span> Cloning repository</h3>
+<p>Clone your repository using the same clone link that you used for
+cloning on your local PC. You will need your DkIT username and password
+for GitLab when asked.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://url/of/repo/here</span></code></pre></div>
+<h3 data-number="6.0.2" id="checking-for-required-tools"><span class="header-section-number">6.0.2</span> Checking for required
+tools</h3>
+<p>First let’s check that the build tools we need are installed. Both of
+these commands should give the full path to the tool. If the command
+replies with nothing then the tools needed aren’t installed.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check that the java compiler is installed</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> javac</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># check that maven is installed</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> mvn</span></code></pre></div>
+<h3 data-number="6.0.3" id="running-the-build"><span class="header-section-number">6.0.3</span> Running the build</h3>
+<p>Now let’s try to get Maven to build our project.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change into dir</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> TrainTimes</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run maven</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mvn</span> package</span></code></pre></div>
+<h3 data-number="6.0.4" id="running-the-jar-file"><span class="header-section-number">6.0.4</span> Running the JAR file</h3>
+<p>Test run the JAR file in the <code>target</code> subdirectory.</p>
+<h1 data-number="7" id="gitlab-runner-setup"><span class="header-section-number">7</span> GitLab Runner Setup</h1>
+<h2 data-number="7.1" id="runner-installation"><span class="header-section-number">7.1</span> Runner installation</h2>
+<p>These steps will set up the runner on your own XOA machine.</p>
+<ol type="1">
+<li>Use SFTP to copy <code>./runner_install.sh</code> to your VM.</li>
+<li>Make the runner script executable using
+<code>chmod +x ./runner_install.sh</code>.</li>
+<li>Run the <code>./runner_install.sh</code> script.</li>
+<li>You will need to enter your VM password when prompted.</li>
+<li>The installation may take some time.</li>
+</ol>
+<h2 data-number="7.2" id="linking-the-runner-to-the-project"><span class="header-section-number">7.2</span> Linking the runner to the
+project</h2>
+<ol type="1">
+<li>On GitLab go to your fork of the <code>TrainTimes</code>
+project.</li>
+<li>Click <em>Settings</em> and then <em>CI/CD</em>.</li>
+<li>Find <em>Runners</em> on the screen and click <em>Expand</em>.</li>
+<li>Click <em>New project runner</em>.</li>
+<li>Choose <em>Linux</em> on the next screen.</li>
+<li><strong>Important!</strong> Make sure to turn on <em>Run untagged
+jobs</em>.</li>
+<li>Click <em>Create runner</em>.</li>
+<li>Under Step 1 on the next screen, copy the command onto your Azure VM
+with <code>sudo</code> infront of it. You may need to enter your machine
+password here.
+<ul>
+<li>If you get a yellow WARNING type Ctrl-C to exit.</li>
+<li>Re-run the command with <code>sudo</code> in front of it as
+instructed.</li>
+</ul></li>
+<li>Press enter to accept the default GitLab URL.</li>
+<li>Press enter to accept the default runner name.</li>
+<li>When it asks <code>Enter an executor</code> type <code>shell</code>
+and press enter.</li>
+<li>Finally click <em>View runners</em>.</li>
+<li>You should see a green dot under <em>Assigned project
+runners</em>.</li>
+</ol>
+<h2 data-number="7.3" id="manually-running-the-pipeline"><span class="header-section-number">7.3</span> Manually running the
+pipeline</h2>
+<p>We will now manually run the pipeline to confirm all works (it
+probably won’t):</p>
+<ol type="1">
+<li>In your <code>TrainTimes</code> project on GitLab go to
+<em>Build/Pipelines</em>.</li>
+<li>Click <em>Run pipeline</em>.</li>
+<li>Click <em>Run pipeline</em> on the next screen also.</li>
+<li>If it fails, look at the reason. Usually it’s a missing
+command.</li>
+<li>On your XOA machine install the missing command(s) and re-try step 4
+until it works.</li>
+</ol>
+<p>By default a failing pipeline will e-mail you from GitLab. It will
+also mail you the first time that a pipeline that previously failed runs
+successfully.</p>
+<h2 data-number="7.4" id="automatically-running-the-pipeline"><span class="header-section-number">7.4</span> Automatically running the
+pipeline</h2>
+<p>In your clone of the repository on your local PC, make a change to
+project (can be very small). Make sure it compiles and runs.</p>
+<p>Commit and push the change.</p>
+<p>Look at your GitLab under <em>Build/Jobs</em> and see that your
+pipeline has automatically run after a short time.</p>
+<p>This will happen regardless of where your repo is pushed from, even
+from changes made in the interactive GitLab screens.</p>
+<h2 data-number="7.5" id="end"><span class="header-section-number">7.5</span> End</h2>
+<p>If you have got this far then you have successfully set up your
+runner and executor and have linked them to your GitLab repository so
+that your pipeline can run when commits are pushed.</p>
+<h1 data-number="8" id="issues"><span class="header-section-number">8</span> Issues</h1>
 <p>Today’s lab is a very basic introduction:</p>
 <ul>
 <li><p>We are really just using CI here as a trigger to run our
@@ -475,22 +586,7 @@ way.</p></li>
 setup.</p></li>
 <li><p>Could consider using the <em>Docker</em> runner.</p></li>
 </ul></li>
+<li><p>We could now do some deployment tasks from this!</p></li>
 </ul>
-<h1 data-number="7" id="alternative-self-setup"><span class="header-section-number">7</span> Alternative: self-setup</h1>
-<h2 data-number="7.1" id="copy-project-to-desktop"><span class="header-section-number">7.1</span> Copy project to desktop</h2>
-<p>First let’s copy the app out of the lab git repository to your
-Desktop. To do this run the following PowerShell command</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Copy-Item</span> <span class="op">-</span>Path <span class="st">&quot;TrainTimes&quot;</span> <span class="op">-</span>Destination <span class="st">&quot;~/Desktop&quot;</span> <span class="op">-</span>Recurse</span></code></pre></div>
-<h2 data-number="7.2" id="initialise-the-git-repo"><span class="header-section-number">7.2</span> Initialise the git repo</h2>
-<p>First let’s initialise the Git repository, add all files and commit
-them. To do this we’ll run:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initalise the repository</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>git init <span class="op">-</span>b main</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># add all files (except .gitignore&#39;d files)</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>git add <span class="op">.</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># commit</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>git commit <span class="op">-</span>m <span class="st">&#39;initial commit&#39;</span></span></code></pre></div>
 </body>
 </html>
