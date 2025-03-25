@@ -360,7 +360,13 @@ digraph G {
 
 ## Disassociating / delete public IPs
 
+```powershell
+# Dissociate the public IP address from the IP configuration
+az network nic ip-config update --name ipconfigmyVM --resource-group lab_rg --nic-name lab-nic-1 --public-ip-address null
 
+# Delete the public IP address
+
+```
 
 
 This now means we can't access any particular member of the backend pool directly.
