@@ -97,19 +97,6 @@ Once you have the repository set up and have added me you should as for it to be
 The most recent commit in advance of the deadline will be graded. 
 
 
-# Demonstration
-
-You will be required to demonstrate your solution briefly during a lab session after the submission date. 
-The demonstration should include:
-
-- Setup automatically including the creation of all resources.
-- VM setup via cloud-init and perhaps afterwards (e.g. file transfer)
-- System running
-- Teardown
-
-It is expected that you will be able to explain in professional terms how you achieved the system's functionality.
-
-
 # Feedback
 
 Group feedback will be provided in class.
