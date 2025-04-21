@@ -33,10 +33,14 @@ Although it's not mandatory you *can* use Azure resource manager templates to bu
 (If you do, obviously make sure that you include them in your submission!)
 
 
-## Cloud init file (20%)
+## VM setup file (20%)
 
 Provide a cloud init file named `vm_init.yml` for your VM.
-You should aim to set up as much as possible in this file to minimise work in subsequent steps.
+
+You can also provide an ansible playbook and inventory file for your VM. 
+If you do this, you will probably just want to install ansible in your `vm-init.yml` file.
+
+You should aim to set up as much as possible in these file to minimise work in subsequent steps.
 
 
 ## VM setup (20%)

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang xml:lang>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Continuous integration</title>
+  <style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+  <style type="text/css">
+body {
+font-family: sans-serif;
+background-color: rgb(245,245,245);
+}
+#TOC {
+padding: 10px;
+background-color: lightyellow;
+}
+h1.title {
+background-color: black;
+color: white;
+padding: 5px;
+font-size: 150%;
+}
+h1 {
+background-color: lightcyan;
+padding: 5px;
+font-size: 120%;
+}
+h2 {
+color: darkblue;
+font-size: 100%;
+}
+h3 {
+color: darkgreen;
+font-size: 100%;
+}
+code {
+font-weight: bold;
+font-size: 120%;
+}
+pre {
+font-size: 120%;
+padding: 0.5em;
+font-weight: bold;
+border-style: solid;
+border-width: 2px;
+border-color: rgb(100,100,100);
+background-color: rgb(245,255,245);
+}
+img[role=img] {
+max-width: 100%;
+}
+
+</style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Continuous integration</h1>
+</header>
+<nav id="TOC" role="doc-toc">
+<h2 id="toc-title">Contents</h2>
+<ul>
+<li><a href="#continuous-integration" id="toc-continuous-integration"><span class="toc-section-number">1</span> Continuous integration</a>
+<ul>
+<li><a href="#continuous-delivery" id="toc-continuous-delivery"><span class="toc-section-number">1.1</span> Continuous delivery</a></li>
+<li><a href="#pre-requisites" id="toc-pre-requisites"><span class="toc-section-number">1.2</span> Pre-requisites</a></li>
+<li><a href="#ci-in-software-development" id="toc-ci-in-software-development"><span class="toc-section-number">1.3</span> CI in software
+development</a></li>
+<li><a href="#ci-for-cloud-architecture-students" id="toc-ci-for-cloud-architecture-students"><span class="toc-section-number">1.4</span> CI for Cloud Architecture
+Students</a></li>
+<li><a href="#basic-idea" id="toc-basic-idea"><span class="toc-section-number">1.5</span> Basic idea</a></li>
+<li><a href="#requirements" id="toc-requirements"><span class="toc-section-number">1.6</span> Requirements</a></li>
+<li><a href="#artefacts" id="toc-artefacts"><span class="toc-section-number">1.7</span> Artefacts</a></li>
+<li><a href="#ci-tooling" id="toc-ci-tooling"><span class="toc-section-number">1.8</span> CI tooling</a></li>
+</ul></li>
+<li><a href="#gitlab-ci" id="toc-gitlab-ci"><span class="toc-section-number">2</span> GitLab CI</a>
+<ul>
+<li><a href="#pipeline" id="toc-pipeline"><span class="toc-section-number">2.1</span> Pipeline</a></li>
+<li><a href="#build-machine" id="toc-build-machine"><span class="toc-section-number">2.2</span> Build machine</a></li>
+<li><a href="#executor" id="toc-executor"><span class="toc-section-number">2.3</span> Executor</a></li>
+<li><a href="#runner" id="toc-runner"><span class="toc-section-number">2.4</span> Runner</a></li>
+</ul></li>
+<li><a href="#recommendations" id="toc-recommendations"><span class="toc-section-number">3</span> Recommendations</a></li>
+<li><a href="#project" id="toc-project"><span class="toc-section-number">4</span> Project</a>
+<ul>
+<li><a href="#forking-the-project" id="toc-forking-the-project"><span class="toc-section-number">4.1</span> Forking the project</a></li>
+<li><a href="#cloning-the-code" id="toc-cloning-the-code"><span class="toc-section-number">4.2</span> Cloning the code</a></li>
+<li><a href="#open-in-your-ide" id="toc-open-in-your-ide"><span class="toc-section-number">4.3</span> Open in your IDE</a></li>
+</ul></li>
+<li><a href="#azure-infrastructure" id="toc-azure-infrastructure"><span class="toc-section-number">5</span> Azure infrastructure</a>
+<ul>
+<li><a href="#infrastructure-setup" id="toc-infrastructure-setup"><span class="toc-section-number">5.1</span> Infrastructure setup</a></li>
+</ul></li>
+<li><a href="#testing-build-on-build-vm" id="toc-testing-build-on-build-vm"><span class="toc-section-number">6</span> Testing build on Build VM</a>
+<ul>
+<li><a href="#cloning-repository" id="toc-cloning-repository"><span class="toc-section-number">6.0.1</span> Cloning repository</a></li>
+<li><a href="#checking-for-required-tools" id="toc-checking-for-required-tools"><span class="toc-section-number">6.0.2</span> Checking for required
+tools</a></li>
+<li><a href="#running-the-build" id="toc-running-the-build"><span class="toc-section-number">6.0.3</span> Running the build</a></li>
+<li><a href="#running-the-jar-file" id="toc-running-the-jar-file"><span class="toc-section-number">6.0.4</span> Running the JAR file</a></li>
+</ul></li>
+<li><a href="#gitlab-runner-setup" id="toc-gitlab-runner-setup"><span class="toc-section-number">7</span> GitLab Runner Setup</a>
+<ul>
+<li><a href="#runner-installation" id="toc-runner-installation"><span class="toc-section-number">7.1</span> Runner installation</a></li>
+<li><a href="#linking-the-runner-to-the-project" id="toc-linking-the-runner-to-the-project"><span class="toc-section-number">7.2</span> Linking the runner to the
+project</a></li>
+<li><a href="#manually-running-the-pipeline" id="toc-manually-running-the-pipeline"><span class="toc-section-number">7.3</span> Manually running the
+pipeline</a></li>
+<li><a href="#automatically-running-the-pipeline" id="toc-automatically-running-the-pipeline"><span class="toc-section-number">7.4</span> Automatically running the
+pipeline</a></li>
+<li><a href="#end" id="toc-end"><span class="toc-section-number">7.5</span> End</a></li>
+</ul></li>
+<li><a href="#issues" id="toc-issues"><span class="toc-section-number">8</span> Issues</a></li>
+</ul>
+</nav>
+<p>In today’s lab we’ll start looking at how GitLab CI can build a basic
+Java application with a view to deploying it to Azure VMs. Today’s class
+will mainly focus on the mechanics of the CI process using GitLab and
+its runners.</p>
+<p>Similar facilites exist within GitHub and other full-featured source
+control systems as well.</p>
+<p><em>This class was adapted from one I did using XOA rather than Azure
+VM. There may be a couple of references to XOA here but you can
+substitute Azure VM for them!</em></p>
+<h1 data-number="1" id="continuous-integration"><span class="header-section-number">1</span> Continuous integration</h1>
+<p><a href="https://en.wikipedia.org/wiki/Continuous_integration">Continuous
+integration</a> technically refers to merging changes back into the main
+branch as often as possible:</p>
+<ul>
+<li><p>Idea originated to combine work of developers in teams as soon as
+possible.</p></li>
+<li><p>Key idea (even for a solo developer) is that code is compiled,
+tested, packaged and deployed automatically on every commit.</p></li>
+</ul>
+<h2 data-number="1.1" id="continuous-delivery"><span class="header-section-number">1.1</span> Continuous delivery</h2>
+<p>CI has evolved into <a href="https://en.wikipedia.org/wiki/Continuous_delivery">continuous
+delivery (CD)</a> where the same processes deliver final products /
+artefacts to end users.</p>
+<h2 data-number="1.2" id="pre-requisites"><span class="header-section-number">1.2</span> Pre-requisites</h2>
+<p>Practical usage depends on:</p>
+<dl>
+<dt>Source control</dt>
+<dd>
+<p>system to record changes and trigger actions.</p>
+</dd>
+<dt>CI toolset</dt>
+<dd>
+<p>to automate the process</p>
+</dd>
+</dl>
+<h2 data-number="1.3" id="ci-in-software-development"><span class="header-section-number">1.3</span> CI in software development</h2>
+<p>CI can be used to automate any task, typically:</p>
+<ul>
+<li><p>Confirming that code compiles correctly without errors (for
+compiled languages like Java, C# etc.)</p></li>
+<li><p>Running automated tests (e.g. unit tests, integration
+tests).</p></li>
+<li><p>Packaging code or executables into ZIP or other distribution
+formats (e.g. apk, pkg, MSI installers).</p></li>
+<li><p>Generating other artefacts like screenshots, documentation,
+webpages etc.</p></li>
+<li><p>Installing code on test (or production!) environments.</p></li>
+<li><p>Announcing updated status using email, Slack, Teams, IRC, Twitter
+via APIs and bots.</p></li>
+<li><p>Updating metrics, dashboards, team visualisations etc.</p></li>
+</ul>
+<p>Just as you should be using source control (as of 2025 git) for any
+project, you should consider some element(s) of CI. <em>Every time I’ve
+started a project and didn’t have time to automate its deployment /
+delivery I’ve regretted it!</em></p>
+<h2 data-number="1.4" id="ci-for-cloud-architecture-students"><span class="header-section-number">1.4</span> CI for Cloud Architecture
+Students</h2>
+<p>Some specific ideas for cloud architecture students:</p>
+<ol type="1">
+<li><p>Deploying a Java or C# application to a VM in the cloud.</p></li>
+<li><p>Deploying cloud infrastructure from CI/CD.</p></li>
+</ol>
+<h2 data-number="1.5" id="basic-idea"><span class="header-section-number">1.5</span> Basic idea</h2>
+<p>Regardless of how we perform our CI, the basic steps remain the same.
+The CI tool should:</p>
+<ol type="1">
+<li><p>Cleanly <strong>clone</strong> the repository in full.</p></li>
+<li><p><strong>Run</strong> the action steps specified.</p>
+<ul>
+<li><p>This might include a deployment step.</p></li>
+<li><p>This might include the creation of cloud resources necessary
+(more advanced!)</p></li>
+</ul></li>
+<li><p><strong>Report</strong> the outcome of the steps.</p></li>
+<li><p><strong>Save artefacts</strong> created (if required).</p></li>
+</ol>
+<p>Reporting and saving can be done either by the CI tool itself or
+scripts in the repository.</p>
+<h2 data-number="1.6" id="requirements"><span class="header-section-number">1.6</span> Requirements</h2>
+<p>For any CI to work:</p>
+<div class="center">
+<p><strong>We must be able to run the build step as a sequence of
+deterministic commands, ideally a single command.</strong></p>
+</div>
+<p>How this works does not matter, but typically:</p>
+<ol type="1">
+<li><p>Makefile based on targets / dependencies using
+<code>make</code>.</p></li>
+<li><p>Script in bash, PowerShell, Python, other language.</p></li>
+<li><p>Language-specific build tool like Maven for Java.</p></li>
+</ol>
+<p>Unless you can repeatably run your build steps:</p>
+<ul>
+<li>Without intervention</li>
+<li>Outside your IDE environment</li>
+<li>On a machine that isn’t your desktop</li>
+</ul>
+<p>Then you won’t be able to run them successfully under CI.</p>
+<h2 data-number="1.7" id="artefacts"><span class="header-section-number">1.7</span> Artefacts</h2>
+<p>Often we want to save some (not all) files generated during the build
+process.</p>
+<ul>
+<li><p>Reporting data about testing, performance, sample output
+etc.</p></li>
+<li><p>Files intended for distribution:</p>
+<ul>
+<li><p>MSI installer from source code for Windows</p></li>
+<li><p>APK app for an android mobile phone</p></li>
+<li><p>JAR or WAR file for Java application</p></li>
+<li><p>Sample input / output from testing.</p></li>
+</ul></li>
+</ul>
+<p>In many other cases the CI/CD pipeline will deploy the project into a
+production or production-like environment. This is increasinly becoming
+the case!</p>
+<h2 data-number="1.8" id="ci-tooling"><span class="header-section-number">1.8</span> CI tooling</h2>
+<p>There are 3 options:</p>
+<ol type="1">
+<li><p><strong>Roll your own</strong> using git, git hooks and bash /
+python scripts.</p>
+<ul>
+<li>There’s a great educational value to doing this if you have
+time!</li>
+</ul></li>
+<li><p><strong>Standalone CI server</strong> like Jenkins, Travis.</p>
+<ul>
+<li>Becoming less common nowadays but still widely utilised.</li>
+</ul></li>
+<li><p><strong>Integrated CI solutions</strong> using source control
+hosts like GitLab, GitHub etc.</p>
+<ul>
+<li>Git mainly used with GitLab / GitHub, so integrated option now makes
+sense in most cases.</li>
+</ul></li>
+</ol>
+<p>In this lab we’ll move forward with <strong>GitLab CI</strong>. Most
+of the ideas are reasonably portable to other CI systems.</p>
+<h1 data-number="2" id="gitlab-ci"><span class="header-section-number">2</span> GitLab CI</h1>
+<p>To automate actions on commit we need:</p>
+<dl>
+<dt>Pipeline</dt>
+<dd>
+<p>that defines the steps to perform</p>
+</dd>
+<dt>Executor</dt>
+<dd>
+<p>environment that will run the steps</p>
+</dd>
+<dt>Runner</dt>
+<dd>
+<p>service to orchestrate:</p>
+<ol type="1">
+<li><p>Creating the executor</p></li>
+<li><p>Running the pipeline</p></li>
+</ol>
+</dd>
+<dt>Build Host</dt>
+<dd>
+<p>server machine or VM that has the Runner service and executor
+installed.</p>
+</dd>
+</dl>
+<h2 data-number="2.1" id="pipeline"><span class="header-section-number">2.1</span> Pipeline</h2>
+<p>The pipeline defines the commands to execute:</p>
+<ul>
+<li><p>Stored as file in repository as
+<code>.gitlab-ci.yml</code></p></li>
+<li><p>Pipelines vary in complexity:</p>
+<ul>
+<li><p>Simplest pipelines (as we’ll use today) just run single (set of)
+commands when repository updated.</p></li>
+<li><p>More complex pipelines introduce depedencies, stages, rules
+etc.</p></li>
+</ul></li>
+</ul>
+<p><em>Personally I’m not a fan of too much complexity in your GitLab
+pipeline. Do as much of the work in a standard non-GitLab specific tool
+and just call it from the gitlab-ci pipeline. Never duplicate steps!
+Have all the work defined in ONE place ONLY!</em></p>
+<h2 data-number="2.2" id="build-machine"><span class="header-section-number">2.2</span> Build machine</h2>
+<p>Runner and executor are separate to GitLab itself:</p>
+<ul>
+<li><p>Need to be installed on a suitable computer (here a linux virtual
+machine) that</p></li>
+<li><p>Should be on all the time, so can continuously communicate with
+GitLab.</p></li>
+<li><p>Could be a machine on the network, in the cloud etc.</p></li>
+</ul>
+<p>The host needs to be able to contact the GitLab server over HTTPS. In
+our lab today we’ll use an Azure VM as the host.</p>
+<p><em>I’ve also used XOA Linux instance(s) to host the runner and
+provide the executor. You may want to investigate this for cost reasons
+if XOA meets your needs for some projects.</em></p>
+<h2 data-number="2.3" id="executor"><span class="header-section-number">2.3</span> Executor</h2>
+<p>The executor is the environment used by the runner to run the
+pipeline. Common executors:</p>
+<dl>
+<dt>Shell</dt>
+<dd>
+<p>executor uses the default system shell (e.g. bash on linux,
+PowerShell on Windows)</p>
+<ul>
+<li><p>Installed already so no further configuration needed.</p></li>
+<li><p>Issue: required packages etc need to be installed
+manually.</p></li>
+</ul>
+</dd>
+<dt>Docker</dt>
+<dd>
+<p>executor uses the docker container system</p>
+<ul>
+<li><p>Needs to be separately setup.</p></li>
+<li><p>Advantage: build environment can be setup in repository.</p></li>
+</ul>
+</dd>
+</dl>
+<p>For today’s lab we’ll use the shell executor.</p>
+<h2 data-number="2.4" id="runner"><span class="header-section-number">2.4</span> Runner</h2>
+<p>The runner needs to be installed on our XOA instance:</p>
+<ul>
+<li><p>The runner communicates with GitLab continuously.</p></li>
+<li><p>When new commits are pushed to the repository the runner:</p>
+<ul>
+<li><p>Invokes the pipeline using the executor</p></li>
+<li><p>Reports progress back to GitLab for display</p></li>
+<li><p>Captures defined artefacts and sends them to GitLab</p></li>
+</ul></li>
+<li><p>The runner normally is installed as a separate Linux user
+specifically designated for this purpose.</p></li>
+</ul>
+<h1 data-number="3" id="recommendations"><span class="header-section-number">3</span> Recommendations</h1>
+<ul>
+<li><p>You must have your build process scripted to begin with.</p></li>
+<li><p>You should use the same script(s) to build both locally and in
+your CI pipeline.</p></li>
+</ul>
+<h1 data-number="4" id="project"><span class="header-section-number">4</span> Project</h1>
+<p>A basic Java App called <code>TrainTimes</code> is provided. You are
+welcome to try this lab with one of your own apps following the same
+workflow. If you do, you might encounter a minor issue around JDK/JVM
+versions. It’s easy to fix if it occurs.</p>
+<h2 data-number="4.1" id="forking-the-project"><span class="header-section-number">4.1</span> Forking the project</h2>
+<p>The <code>TrainTimes</code> project is set up on GitLab. Here you
+will use the <em>fork</em> feature on GitLab to make your own personal
+copy of it:</p>
+<ol type="1">
+<li>Log in to <a href="https://gitlab.comp.dkit.ie">the school GitLab
+instance</a>.</li>
+<li>Navigate to: https://gitlab.comp.dkit.ie/grantp/TrainTimes .</li>
+<li>Click <strong>Fork</strong>.</li>
+<li>On the next page that appears click <strong>Fork
+project</strong>.</li>
+<li>You’ll be taken to your own copy of <code>TrainTimes</code>.</li>
+</ol>
+<h2 data-number="4.2" id="cloning-the-code"><span class="header-section-number">4.2</span> Cloning the code</h2>
+<ol type="1">
+<li>Change to your desktop using <code>cd ~/Desktop</code>. (You can use
+any other folder, but don’t use any folder within the
+<code>cloud_architecture</code> folder which is itself a git repository.
+Bad things can happen with git repositories are nested within other git
+repositories!)</li>
+<li>Clone <em>your own</em> fork of the <code>TrainTimes</code> using
+the appropriate <code>git clone</code> command given on the GitLab
+project page.</li>
+</ol>
+<h2 data-number="4.3" id="open-in-your-ide"><span class="header-section-number">4.3</span> Open in your IDE</h2>
+<p>This is a Maven project. I originally created it in IntelliJ, but it
+should load any Maven compliant IDE. <em>I haven’t tested it in any
+other.</em></p>
+<p>Open it in your IDE and confirm that you can build and run it. The
+very basic project does very little!</p>
+<h1 data-number="5" id="azure-infrastructure"><span class="header-section-number">5</span> Azure infrastructure</h1>
+<p><img role="img" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIKICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPgo8IS0tIEdlbmVyYXRlZCBieSBncmFwaHZpeiB2ZXJzaW9uIDEyLjIuMSAoMjAyNDEyMDYuMjM1MykKIC0tPgo8IS0tIFRpdGxlOiBHIFBhZ2VzOiAxIC0tPgo8c3ZnIHdpZHRoPSI0NDZwdCIgaGVpZ2h0PSIyMjdwdCIKIHZpZXdCb3g9IjAuMDAgMC4wMCA0NDUuNzUgMjI3LjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj4KPGcgaWQ9ImdyYXBoMCIgY2xhc3M9ImdyYXBoIiB0cmFuc2Zvcm09InNjYWxlKDEgMSkgcm90YXRlKDApIHRyYW5zbGF0ZSg0IDIyMykiPgo8dGl0bGU+RzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9IndoaXRlIiBzdHJva2U9Im5vbmUiIHBvaW50cz0iLTQsNCAtNCwtMjIzIDQ0MS43NSwtMjIzIDQ0MS43NSw0IC00LDQiLz4KPGcgaWQ9ImNsdXN0MSIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfcmc8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9Ijc0LC04IDc0LC0yMTEgNDI5Ljc1LC0yMTEgNDI5Ljc1LC04IDc0LC04Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI1MS44OCIgeT0iLTE5My43IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9yZyAod2VzdGV1cm9wZSk8L3RleHQ+CjwvZz4KPGcgaWQ9ImNsdXN0MiIgY2xhc3M9ImNsdXN0ZXIiPgo8dGl0bGU+Y2x1c3Rlcl9sYWJfdm5ldDwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iODIsLTE2IDgyLC0xMzQgNDIxLjc1LC0xMzQgNDIxLjc1LC0xNiA4MiwtMTYiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjUxLjg4IiB5PSItMjMuMiIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfdm5ldCAxMC4wLjAuMC8xNjwvdGV4dD4KPC9nPgo8ZyBpZD0iY2x1c3QzIiBjbGFzcz0iY2x1c3RlciI+Cjx0aXRsZT5jbHVzdGVyX2xhYl9zdWJuZXQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjIyMS43NSwtNDkgMjIxLjc1LC0xMjYgNDEzLjc1LC0xMjYgNDEzLjc1LC00OSAyMjEuNzUsLTQ5Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjMxNy43NSIgeT0iLTU2LjIiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX3N1Ym5ldCAxMC4wLjEuMC8yNDwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCAtLT4KPGcgaWQ9Im5vZGUxIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5jbGllbnQ8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGdyZXkiIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iNTQsLTExOCAwLC0xMTggMCwtODIgNTQsLTgyIDU0LC0xMTgiLz4KPHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMjciIHk9Ii05NC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5DbGllbnQ8L3RleHQ+CjwvZz4KPCEtLSBsYWJfcHVibGljX2lwXzEgLS0+CjxnIGlkPSJub2RlNCIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX3B1YmxpY19pcF8xPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmVlbiIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxOTMuNzUsLTExOCA5MCwtMTE4IDkwLC04MiAxOTMuNzUsLTgyIDE5My43NSwtMTE4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjE0MS44OCIgeT0iLTk0Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9wdWJsaWNfaXBfMTwvdGV4dD4KPC9nPgo8IS0tIGNsaWVudCYjNDU7Jmd0O2xhYl9wdWJsaWNfaXBfMSAtLT4KPGcgaWQ9ImVkZ2U0IiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5jbGllbnQmIzQ1OyZndDtsYWJfcHVibGljX2lwXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNNTQuNDYsLTEwMEM2MS43MiwtMTAwIDY5LjkxLC0xMDAgNzguMjgsLTEwMCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSI3OC4yMywtMTAzLjUgODguMjMsLTEwMCA3OC4yMywtOTYuNSA3OC4yMywtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl92bV8xIC0tPgo8ZyBpZD0ibm9kZTIiIGNsYXNzPSJub2RlIj4KPHRpdGxlPmxhYl92bV8xPC90aXRsZT4KPHBvbHlnb24gZmlsbD0ibGlnaHRncmV5IiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjQwNS43NSwtMTE4IDMzNSwtMTE4IDMzNSwtODIgNDA1Ljc1LC04MiA0MDUuNzUsLTExOCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIzNzAuMzgiIHk9Ii05NC45NSIgZm9udC1mYW1pbHk9IlRpbWVzLHNlcmlmIiBmb250LXNpemU9IjE0LjAwIj5sYWJfdm1fMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uaWNfMSAtLT4KPGcgaWQ9Im5vZGUzIiBjbGFzcz0ibm9kZSI+Cjx0aXRsZT5sYWJfbmljXzE8L3RpdGxlPgo8cG9seWdvbiBmaWxsPSJsaWdodGN5YW4iIHN0cm9rZT0iYmxhY2siIHBvaW50cz0iMjk5LC0xMTggMjI5Ljc1LC0xMTggMjI5Ljc1LC04MiAyOTksLTgyIDI5OSwtMTE4Ii8+Cjx0ZXh0IHRleHQtYW5jaG9yPSJtaWRkbGUiIHg9IjI2NC4zOCIgeT0iLTk0Ljk1IiBmb250LWZhbWlseT0iVGltZXMsc2VyaWYiIGZvbnQtc2l6ZT0iMTQuMDAiPmxhYl9uaWNfMTwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xIC0tPgo8ZyBpZD0iZWRnZTIiIGNsYXNzPSJlZGdlIj4KPHRpdGxlPmxhYl9uaWNfMSYjNDU7Jmd0O2xhYl92bV8xPC90aXRsZT4KPHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSJibGFjayIgZD0iTTI5OS40MywtMTAwQzMwNi45OSwtMTAwIDMxNS4xMywtMTAwIDMyMy4wOSwtMTAwIi8+Cjxwb2x5Z29uIGZpbGw9ImJsYWNrIiBzdHJva2U9ImJsYWNrIiBwb2ludHM9IjMyMy4wMiwtMTAzLjUgMzMzLjAyLC0xMDAgMzIzLjAyLC05Ni41IDMyMy4wMiwtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl9wdWJsaWNfaXBfMSYjNDU7Jmd0O2xhYl9uaWNfMSAtLT4KPGcgaWQ9ImVkZ2UzIiBjbGFzcz0iZWRnZSI+Cjx0aXRsZT5sYWJfcHVibGljX2lwXzEmIzQ1OyZndDtsYWJfbmljXzE8L3RpdGxlPgo8cGF0aCBmaWxsPSJub25lIiBzdHJva2U9ImJsYWNrIiBkPSJNMTkzLjk4LC0xMDBDMjAxLjksLTEwMCAyMTAuMDQsLTEwMCAyMTcuODMsLTEwMCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMTcuOCwtMTAzLjUgMjI3LjgsLTEwMCAyMTcuOCwtOTYuNSAyMTcuOCwtMTAzLjUiLz4KPC9nPgo8IS0tIGxhYl9uc2cgLS0+CjxnIGlkPSJub2RlNSIgY2xhc3M9Im5vZGUiPgo8dGl0bGU+bGFiX25zZzwvdGl0bGU+Cjxwb2x5Z29uIGZpbGw9ImxpZ2h0cGluayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIxNzAuODgsLTE3OCAxMTIuODgsLTE3OCAxMTIuODgsLTE0MiAxNzAuODgsLTE0MiAxNzAuODgsLTE3OCIvPgo8dGV4dCB0ZXh0LWFuY2hvcj0ibWlkZGxlIiB4PSIxNDEuODgiIHk9Ii0xNTQuOTUiIGZvbnQtZmFtaWx5PSJUaW1lcyxzZXJpZiIgZm9udC1zaXplPSIxNC4wMCI+bGFiX25zZzwvdGV4dD4KPC9nPgo8IS0tIGxhYl9uc2cmIzQ1OyZndDtsYWJfbmljXzEgLS0+CjxnIGlkPSJlZGdlMSIgY2xhc3M9ImVkZ2UiPgo8dGl0bGU+bGFiX25zZyYjNDU7Jmd0O2xhYl9uaWNfMTwvdGl0bGU+CjxwYXRoIGZpbGw9Im5vbmUiIHN0cm9rZT0iYmxhY2siIGQ9Ik0xNzEuMzQsLTE0OC4yNEMxNzguNywtMTQ1LjA1IDE4Ni41NywtMTQxLjUgMTkzLjc1LC0xMzggMjAyLjc0LC0xMzMuNjEgMjEyLjI0LC0xMjguNjYgMjIxLjIzLC0xMjMuOCIvPgo8cG9seWdvbiBmaWxsPSJibGFjayIgc3Ryb2tlPSJibGFjayIgcG9pbnRzPSIyMjIuNjgsLTEyNyAyMjkuNzgsLTExOS4xMyAyMTkuMzMsLTEyMC44NiAyMjIuNjgsLTEyNyIvPgo8L2c+CjwvZz4KPC9zdmc+Cg==" /></p>
+<h2 data-number="5.1" id="infrastructure-setup"><span class="header-section-number">5.1</span> Infrastructure setup</h2>
+<p>You’re already familiar with the infrastructure needed, so let’s use
+a PowerShell script <code>./azure_build_setup.ps1</code> to create our
+Azure environment.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode powershell"><code class="sourceCode powershell"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">./</span>azure_build_setup<span class="op">.</span><span class="fu">ps1</span></span></code></pre></div>
+<h1 data-number="6" id="testing-build-on-build-vm"><span class="header-section-number">6</span> Testing build on Build VM</h1>
+<p>Login to the build VM over SSH.</p>
+<h3 data-number="6.0.1" id="cloning-repository"><span class="header-section-number">6.0.1</span> Cloning repository</h3>
+<p>Clone your repository using the same clone link that you used for
+cloning on your local PC. You will need your DkIT username and password
+for GitLab when asked.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone https://url/of/repo/here</span></code></pre></div>
+<h3 data-number="6.0.2" id="checking-for-required-tools"><span class="header-section-number">6.0.2</span> Checking for required
+tools</h3>
+<p>First let’s check that the build tools we need are installed. Both of
+these commands should give the full path to the tool. If the command
+replies with nothing then the tools needed aren’t installed.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check that the java compiler is installed</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> javac</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># check that maven is installed</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">which</span> mvn</span></code></pre></div>
+<h3 data-number="6.0.3" id="running-the-build"><span class="header-section-number">6.0.3</span> Running the build</h3>
+<p>Now let’s try to get Maven to build our project.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># change into dir</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> TrainTimes</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># run maven</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">mvn</span> package</span></code></pre></div>
+<h3 data-number="6.0.4" id="running-the-jar-file"><span class="header-section-number">6.0.4</span> Running the JAR file</h3>
+<p>Test run the JAR file in the <code>target</code> subdirectory.</p>
+<h1 data-number="7" id="gitlab-runner-setup"><span class="header-section-number">7</span> GitLab Runner Setup</h1>
+<h2 data-number="7.1" id="runner-installation"><span class="header-section-number">7.1</span> Runner installation</h2>
+<p>These steps will set up the runner on your own XOA machine.</p>
+<ol type="1">
+<li>Use SFTP to copy <code>./runner_install.sh</code> to your VM.</li>
+<li>Make the runner script executable using
+<code>chmod +x ./runner_install.sh</code>.</li>
+<li>Run the <code>./runner_install.sh</code> script.</li>
+<li>You will need to enter your VM password when prompted.</li>
+<li>The installation may take some time.</li>
+</ol>
+<h2 data-number="7.2" id="linking-the-runner-to-the-project"><span class="header-section-number">7.2</span> Linking the runner to the
+project</h2>
+<ol type="1">
+<li>On GitLab go to your fork of the <code>TrainTimes</code>
+project.</li>
+<li>Click <em>Settings</em> and then <em>CI/CD</em>.</li>
+<li>Find <em>Runners</em> on the screen and click <em>Expand</em>.</li>
+<li>Click <em>New project runner</em>.</li>
+<li>Choose <em>Linux</em> on the next screen.</li>
+<li><strong>Important!</strong> Make sure to turn on <em>Run untagged
+jobs</em>.</li>
+<li>Click <em>Create runner</em>.</li>
+<li>Under Step 1 on the next screen, copy the command onto your Azure VM
+with <code>sudo</code> infront of it. You may need to enter your machine
+password here.
+<ul>
+<li>If you get a yellow WARNING type Ctrl-C to exit.</li>
+<li>Re-run the command with <code>sudo</code> in front of it as
+instructed.</li>
+</ul></li>
+<li>Press enter to accept the default GitLab URL.</li>
+<li>Press enter to accept the default runner name.</li>
+<li>When it asks <code>Enter an executor</code> type <code>shell</code>
+and press enter.</li>
+<li>Finally click <em>View runners</em>.</li>
+<li>You should see a green dot under <em>Assigned project
+runners</em>.</li>
+</ol>
+<h2 data-number="7.3" id="manually-running-the-pipeline"><span class="header-section-number">7.3</span> Manually running the
+pipeline</h2>
+<p>We will now manually run the pipeline to confirm all works (it
+probably won’t):</p>
+<ol type="1">
+<li>In your <code>TrainTimes</code> project on GitLab go to
+<em>Build/Pipelines</em>.</li>
+<li>Click <em>Run pipeline</em>.</li>
+<li>Click <em>Run pipeline</em> on the next screen also.</li>
+<li>If it fails, look at the reason. Usually it’s a missing
+command.</li>
+<li>On your XOA machine install the missing command(s) and re-try step 4
+until it works.</li>
+</ol>
+<p>By default a failing pipeline will e-mail you from GitLab. It will
+also mail you the first time that a pipeline that previously failed runs
+successfully.</p>
+<h2 data-number="7.4" id="automatically-running-the-pipeline"><span class="header-section-number">7.4</span> Automatically running the
+pipeline</h2>
+<p>In your clone of the repository on your local PC, make a change to
+project (can be very small). Make sure it compiles and runs.</p>
+<p>Commit and push the change.</p>
+<p>Look at your GitLab under <em>Build/Jobs</em> and see that your
+pipeline has automatically run after a short time.</p>
+<p>This will happen regardless of where your repo is pushed from, even
+from changes made in the interactive GitLab screens.</p>
+<h2 data-number="7.5" id="end"><span class="header-section-number">7.5</span> End</h2>
+<p>If you have got this far then you have successfully set up your
+runner and executor and have linked them to your GitLab repository so
+that your pipeline can run when commits are pushed.</p>
+<h1 data-number="8" id="issues"><span class="header-section-number">8</span> Issues</h1>
+<p>Today’s lab is a very basic introduction:</p>
+<ul>
+<li><p>We are really just using CI here as a trigger to run our
+script:</p>
+<ul>
+<li><p>We could do a lot more in terms of selective reporting if tests
+or other processes fail.</p></li>
+<li><p>Opinions vary as to whether to do more work in the CI or external
+scripts.</p></li>
+</ul></li>
+<li><p>Our build environment is not self-contained and is dependent on
+the machine hosting the runner.</p>
+<ul>
+<li><p>Ideally our build environment should be reproducible some
+way.</p></li>
+<li><p>Consider container, virtualisation or automated package
+setup.</p></li>
+<li><p>Could consider using the <em>Docker</em> runner.</p></li>
+</ul></li>
+<li><p>We could now do some deployment tasks from this!</p></li>
+</ul>
+</body>
+</html>

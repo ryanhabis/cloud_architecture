@@ -288,10 +288,163 @@ In the case of SSH we have host keys that the client verifies.
 
 Obviously if the client gets connected to a different VM, the host key verification will fail.
 
+You can get around this by removing the host key from your local machine:
+
+```powershell
+ssh-keygen -R public-ip-here
+```
+
 The only way around this is to copy the relevant host keys so they're identical. Or setup a *Certificate Authority* if you really want to! 
 
 
-## Backend uniformity
+## Handling VM failure
+
+Stop one of the VMs, and wait until the status becomes `Stopped (deallocated)`. 
+
+Try to connect.
+
+You should get connected to the second one.
+
+
+# Direct VM access
+
+As currently configured, direct VM access is possible using their Public IPs.
+Ideally we would avoid the backend pool machines having Public IPs at all:
+
+```graphviz
+digraph G {
+	rankdir=LR;
+	node [ style=filled, shape=rectangle ];
+	client [ label="User client" ];
+	admin [label="Admin client" ];
+	subgraph cluster_lab_rg {
+		label="lab_rg (westeurope)";
+		
+		subgraph cluster_lab_vnet {
+			label="lab_vnet 10.0.0.0/16";
+			labelloc=b
+			
+			subgraph cluster_lab_subnet {
+				label="lab_subnet 10.0.1.0/24";
+				labelloc=b
+			
+				lab_vm_1 ;
+				lab_nic_1 [fillcolor=lightcyan];
+				
+				lab_vm_2 [style="filled"];
+				lab_nic_2 [style="filled" fillcolor=lightcyan];
+			
+			}
+			
+
+			load_balancer_public_ip [ label="Load balancer\nPublic IP",fillcolor=lightgreen];
+			load_balancer_public_ip -> load_balancer;
+			load_balancer [ label="Load balancer" ];
+			load_balancer -> lab_nic_1;
+			load_balancer -> lab_nic_2;
+			
+		}
+	    
+		lab_nsg [ fillcolor=lightpink ];
+		lab_nsg -> lab_nic_1;
+		lab_nsg -> lab_nic_2;
+		lab_nic_1 -> lab_vm_1;
+		lab_nic_2 -> lab_vm_2;
+		
+		
+	}
+	client -> load_balancer_public_ip;
+	
+}
+```
+
+## Disassociating / delete public IPs
+
+```powershell
+# Dissociate the public IP address from the IP configuration
+az network nic ip-config update --name ipconfigmyVM --resource-group lab_rg --nic-name lab-nic-1 --public-ip-address null
+
+# Delete the public IP address
+
+```
+
+
+This now means we can't access any particular member of the backend pool directly.
+
+
+## Bastion host
+
+We can get around this by creating a Bastion host (as before):
+
+```graphviz
+digraph G {
+	rankdir=LR;
+	node [ style=filled, shape=rectangle ];
+	client [ label="User client" ];
+	admin [label="Admin client" ];
+	subgraph cluster_lab_rg {
+		label="lab_rg (westeurope)";
+		
+		subgraph cluster_lab_vnet {
+			label="lab_vnet 10.0.0.0/16";
+			labelloc=b
+			
+			subgraph cluster_lab_subnet {
+				label="lab_subnet 10.0.1.0/24";
+				labelloc=b
+			
+				lab_gateway;
+				lab_nic_gateway [fillcolor=lightcyan];
+				
+			
+				lab_vm_1 ;
+				lab_nic_1 [fillcolor=lightcyan];
+				
+				lab_vm_2 [style="filled"];
+				lab_nic_2 [style="filled" fillcolor=lightcyan];
+			
+			}
+			
+			gateway_public_ip [ label="Gateway\nPublic IP",fillcolor=lightgreen];
+			
+			load_balancer_public_ip [ label="Load balancer\nPublic IP",fillcolor=lightgreen];
+			load_balancer_public_ip -> load_balancer;
+			load_balancer [ label="Load balancer" ];
+			load_balancer -> lab_nic_1;
+			load_balancer -> lab_nic_2;
+			
+		}
+	    
+		lab_nsg [ fillcolor=lightpink ];
+		lab_nsg -> lab_nic_1;
+		lab_nsg -> lab_nic_2;
+		lab_nic_1 -> lab_vm_1;
+		lab_nic_2 -> lab_vm_2;
+		
+		
+	}
+	client -> load_balancer_public_ip;
+	
+}
+```
+
+Let's first create the gateway public IP, NIC and VM:
+
+```powershell
+# public IP
+az network public-ip create -g lab_rg -n lab_gateway_public_ip
+
+# nic
+az network nic create -g lab_rg --name lab_gateway_nic --vnet-name lab_vnet --subnet lab_subnet --network-security-group lab_nsg --public-ip-address lab_gateway_public_ip
+
+# VM
+az vm create -g lab_rg -n lab-gateway-vm --location westeurope --nics lab_gateway_nic  --image 'Canonical:ubuntu-24_04-lts:server:latest' --admin-username developer --admin-password 1Password2025.  --size Standard_B1s 
+```
+
+
+
+
+# Backend uniformity
 
 The load balancer configuration itself only provides the means to distribute incoming connections among a number of backend VMs.
 It doesn't actually ensure that the machines are in any way identical at all.

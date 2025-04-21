@@ -1,0 +1,11 @@
+#cloud-config
+package_upgrade: true
+packages:
+  - default-jdk
+  - maven
+write_files:
+  - owner: developer:developer
+    path: /home/developer/cloud_init_done.txt
+    defer: true
+    content: |
+      Cloud init work is done!
